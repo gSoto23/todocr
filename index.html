@@ -3,298 +3,304 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>TODOCR · Cotizador Rápido</title>
+    <title>TODOCR · Jardinería, Limpieza y Mantenimiento en Poás y Alajuela</title>
+    <meta name="description" content="TODOCR: Servicios profesionales de jardinería, limpieza y mantenimiento para Airbnb, hoteles y condominios en Poás y Alajuela. Tarifas orientativas y cotización rápida."/>
+    <link rel="canonical" href="https://www.todocr.com/"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/assets/favicon.png"/>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-slate-50 text-slate-800">
-<!-- Header -->
-<header class="bg-white border-b">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
-        <img src="./img/logotodocr.png" alt="TODOCR" class="h-10 w-auto">
-        <div>
-            <h1 class="text-xl md:text-2xl font-bold tracking-tight">TODOCR · Cotizador Rápido</h1>
-            <p class="text-sm text-slate-600">Jardinería · Limpieza · Reparaciones — Alajuela, Costa Rica</p>
-        </div>
-        <div class="ml-auto hidden md:flex gap-2">
-            <span class="badge bg-black/5 text-slate-700">WhatsApp: +506 7080 8613</span>
-            <span class="badge bg-black/5 text-slate-700">info.todocr@gmail.com</span>
+
+<!-- Topbar -->
+<header class="bg-white border-b sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+        <a href="./index.html"><img src="/assets/logotodocr.png" alt="TODOCR" class="h-10 w-auto"></a>
+        <nav class="ml-auto hidden md:flex gap-6 text-sm">
+            <a href="#servicios" class="hover:text-slate-900 nav-link" data-i18n="nav_services">Servicios</a>
+            <a href="#planes" class="hover:text-slate-900 nav-link" data-i18n="nav_plans">Planes</a>
+            <a href="#proceso" class="hover:text-slate-900 nav-link" data-i18n="nav_process">Proceso</a>
+            <a href="#galeria" class="hover:text-slate-900 nav-link" data-i18n="nav_gallery">Galería</a>
+            <a href="#testimonios" class="hover:text-slate-900 nav-link" data-i18n="nav_testimonials">Testimonios</a>
+            <a href="#faq" class="hover:text-slate-900 nav-link" data-i18n="nav_faq">FAQ</a>
+            <a href="#contacto" class="hover:text-slate-900 nav-link" data-i18n="nav_contact">Contacto</a>
+        </nav>
+        <div class="ml-auto flex items-center gap-2">
+            <button id="langToggle" class="text-sm px-3 py-1 rounded border bg-white hover:bg-slate-100 flex items-center gap-2" title="ES/EN">
+                <span id="currentLang">ES</span>
+            </button>
+
+            <a href="login.html"
+               class="inline-flex items-center justify-center btn text-white p-2 rounded-full hover:opacity-90 transition-opacity"
+               style="background:#74A643"
+               title="Login Cotizador">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-6 w-6"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+            </a>
         </div>
     </div>
 </header>
 
-<main class="max-w-6xl mx-auto px-4 py-6 space-y-8">
-    <!-- Categorías -->
-    <section class="grid md:grid-cols-3 gap-6">
+
+<!-- Hero -->
+<section class="brand-gradient text-white">
+    <div class="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-8 items-center">
+        <div>
+            <h1 class="text-3xl md:text-4xl font-bold leading-tight" data-i18n="hero_title">
+                Mantenimiento integral para Airbnb, Hoteles y Condominios
+            </h1>
+            <p class="mt-3 opacity-90" data-i18n="hero_sub">
+                Jardinería, limpieza y reparaciones confiables en Poás y Alajuela Centro. Respuesta ágil, calidad constante.
+            </p>
+            <div class="mt-6 flex gap-3">
+                <a href="#contacto" class="btn text-slate-900" style="background:#F4A300" data-i18n="hero_cta">Solicitar cotización</a>
+                <a href="https://wa.me/50670808613?text=Hola%20TODOCR%2C%20quisiera%20una%20cotizaci%C3%B3n" target="_blank" class="btn border bg-white/10 hover:bg-white/20">
+                    WhatsApp
+                </a>
+            </div>
+        </div>
+        <div class="relative">
+            <img src="/assets/hero.jpg" alt="Mantenimiento de propiedades" class="rounded-2xl shadow-lg w-full h-64 md:h-80 object-cover">
+            <div class="absolute -bottom-4 -right-4 bg-white text-slate-700 px-4 py-3 rounded-xl shadow">
+                <div class="text-xs" data-i18n="hero_badge">Cobertura: Poás · Alajuela Centro</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Servicios -->
+<section id="servicios" class="max-w-7xl mx-auto px-4 py-12 space-y-8">
+    <header>
+        <h2 class="text-2xl font-bold" data-i18n="services_title">Servicios</h2>
+        <p class="text-slate-600" data-i18n="services_intro">
+            Detallamos qué incluye cada servicio, su modalidad de tarifa y consideraciones.
+        </p>
+    </header>
+
+    <div class="grid md:grid-cols-3 gap-6">
         <!-- Jardinería -->
-        <div class="card p-5">
-            <div class="flex items-center gap-3">
-                <img src="./img/jardineriaIcon.png" class="h-8 w-8" alt="Jardinería">
-                <h2 class="text-lg font-bold" style="color:#74A643">Jardinería</h2>
+        <div class="card p-6">
+            <div class="flex items-center gap-3 mb-2">
+                <img src="/assets/jardineriaIcon.png" class="h-8 w-8" alt="Jardinería">
+                <h3 class="text-lg font-bold" style="color:#74A643" data-i18n="svc_garden">Jardinería (por m²)</h3>
             </div>
-            <ul class="mt-3 text-sm leading-6">
-                <li>• Corte de césped y bordes</li>
-                <li>• Poda de arbustos y árboles</li>
-                <li>• Riego y abonado</li>
-                <li>• Limpieza de zonas verdes</li>
-                <li>• Diseño y reposición de plantas</li>
+            <ul class="text-sm leading-6 list-disc pl-5">
+                <li data-i18n="g1">Corte de césped y bordes — incluye orillado y soplado.</li>
+                <li data-i18n="g2">Poda ligera de arbustos y árboles (altura segura).</li>
+                <li data-i18n="g3">Limpieza de zonas verdes; retiro de hojas.</li>
+                <li data-i18n="g4">Riego y abonado básico.</li>
+                <li data-i18n="g5">Diseño y reposición de plantas (estimativo).</li>
             </ul>
+            <div class="mt-4 text-sm text-slate-600" data-i18n="g_tariffs">
+                Rendimientos ref.: 200 m²/h (corte), 150 m²/h (limpieza), 50 m²/h (poda). Tarifas orientativas: ₡120–₡160/m² según terreno y accesibilidad.
+            </div>
         </div>
+
         <!-- Limpieza -->
-        <div class="card p-5">
-            <div class="flex items-center gap-3">
-                <img src="./img/limpiezaicon.png" class="h-8 w-8" alt="Limpieza">
-                <h2 class="text-lg font-bold" style="color:#1E88C7">Limpieza</h2>
+        <div class="card p-6">
+            <div class="flex items-center gap-3 mb-2">
+                <img src="/assets/limpiezaicon.png" class="h-8 w-8" alt="Limpieza">
+                <h3 class="text-lg font-bold" style="color:#1E88C7" data-i18n="svc_clean">Limpieza (por m²)</h3>
             </div>
-            <ul class="mt-3 text-sm leading-6">
-                <li>• Turnover Airbnb (check-in/check-out)</li>
-                <li>• Limpieza profunda</li>
-                <li>• Limpieza de vidrios interior/exterior</li>
-                <li>• Post-remodelación</li>
-                <li>• Sanitización focal</li>
+            <ul class="text-sm leading-6 list-disc pl-5">
+                <li data-i18n="c1">Turnover Airbnb: recámaras, baño, cocina liviana, blancos y básicos.</li>
+                <li data-i18n="c2">Limpieza profunda: desengrase, juntas, interiores de mobiliario.</li>
+                <li data-i18n="c3">Vidrios interior/exterior.</li>
+                <li data-i18n="c4">Post-remodelación.</li>
+                <li data-i18n="c5">Sanitización focal (áreas críticas).</li>
             </ul>
-        </div>
-        <!-- Reparaciones -->
-        <div class="card p-5">
-            <div class="flex items-center gap-3">
-                <img src="./img/fixicon.png" class="h-8 w-8" alt="Reparación">
-                <h2 class="text-lg font-bold" style="color:#F4A300">Reparación y Mantenimiento</h2>
+            <div class="mt-4 text-sm text-slate-600" data-i18n="c_tariffs">
+                Rendimientos ref.: 50 m²/h (turnover), 30 m²/h (profunda), 20 m²/h (vidrios). Materiales especiales se cotizan aparte.
             </div>
-            <ul class="mt-3 text-sm leading-6">
-                <li>• Electricidad y fontanería básica</li>
-                <li>• Pintura interior/exterior y de techos</li>
-                <li>• Instalaciones menores (TV, repisas, cortinas)</li>
-                <li>• Diagnóstico preventivo + reporte fotográfico</li>
-                <li>• Urgencias 24 horas</li>
+        </div>
+
+        <!-- Mantenimiento -->
+        <div class="card p-6">
+            <div class="flex items-center gap-3 mb-2">
+                <img src="/assets/fixicon.png" class="h-8 w-8" alt="Reparación y Mantenimiento">
+                <h3 class="text-lg font-bold" style="color:#F4A300" data-i18n="svc_maint">Mantenimiento y Reparaciones</h3>
+            </div>
+            <ul class="text-sm leading-6 list-disc pl-5">
+                <li data-i18n="m1">Electricidad y fontanería básica (reemplazos y ajustes menores).</li>
+                <li data-i18n="m2">Pintura interior/exterior y de techos.</li>
+                <li data-i18n="m3">Instalaciones menores (TV, repisas, cortinas).</li>
+                <li data-i18n="m4">Diagnóstico preventivo con reporte y fotos.</li>
+                <li data-i18n="m5">Urgencias 24 h (según disponibilidad).</li>
             </ul>
+            <div class="mt-4 text-sm text-slate-600" data-i18n="m_tariffs">
+                Tarifa ref.: ₡10.700–₡16.050/h, mínimo 0.5 h. Materiales con +10% de manejo. Traslado fuera de Poás/Alajuela Centro se cotiza aparte.
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Calculadora -->
-    <section class="card p-5">
-        <div class="flex items-center justify-between flex-wrap gap-3">
-            <h3 class="text-lg font-bold">Calculadora de Precios</h3>
-            <div class="badge bg-black/5 text-slate-700">TC ₡535/USD · Margen MO 40% · Materiales +10% manejo</div>
+<!-- Planes -->
+<section id="planes" class="max-w-7xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold mb-6" data-i18n="plans_title">Planes</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="card p-6">
+            <h3 class="text-lg font-bold" data-i18n="plan_express">Plan Express</h3>
+            <p class="text-sm text-slate-600 mt-2" data-i18n="plan_express_desc">1 visita única: turnover + mantenimiento ligero. Ideal entre reservas.</p>
+            <div class="mt-4 text-sm" data-i18n="plan_from">Desde</div>
+            <div class="text-xl font-bold">US$55–85</div>
         </div>
+        <div class="card p-6">
+            <h3 class="text-lg font-bold" data-i18n="plan_full">Plan Completo</h3>
+            <p class="text-sm text-slate-600 mt-2" data-i18n="plan_full_desc">2 visitas/mes: jardinería + limpieza + checklist técnico con fotos.</p>
+            <div class="mt-4 text-sm" data-i18n="plan_from">Desde</div>
+            <div class="text-xl font-bold">US$180–260/mes</div>
+        </div>
+        <div class="card p-6">
+            <h3 class="text-lg font-bold" data-i18n="plan_urgent">Plan Urgencias</h3>
+            <p class="text-sm text-slate-600 mt-2" data-i18n="plan_urgent_desc">Atención en 24 horas (según disponibilidad). Ideal para imprevistos.</p>
+            <div class="mt-4 text-sm" data-i18n="plan_from">Desde</div>
+            <div class="text-xl font-bold">US$45 + materiales</div>
+        </div>
+    </div>
+</section>
 
-        <form id="calculator-form" class="mt-6">
-            <!-- Selección -->
-            <div class="grid md:grid-cols-4 gap-4">
+<!-- Proceso -->
+<section id="proceso" class="max-w-7xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold mb-6" data-i18n="process_title">Cómo trabajamos</h2>
+    <div class="grid md:grid-cols-4 gap-6">
+        <div class="card p-5"><h4 class="font-semibold" data-i18n="p1_t">1) Solicitud</h4><p class="text-sm text-slate-600" data-i18n="p1_d">Cuéntanos el tipo de servicio, m²/horas y fecha tentativa.</p></div>
+        <div class="card p-5"><h4 class="font-semibold" data-i18n="p2_t">2) Diagnóstico</h4><p class="text-sm text-slate-600" data-i18n="p2_d">Validamos alcance, ajustamos materiales y tiempos.</p></div>
+        <div class="card p-5"><h4 class="font-semibold" data-i18n="p3_t">3) Ejecución</h4><p class="text-sm text-slate-600" data-i18n="p3_d">Equipo asignado con checklist y estándares de calidad.</p></div>
+        <div class="card p-5"><h4 class="font-semibold" data-i18n="p4_t">4) Entrega</h4><p class="text-sm text-slate-600" data-i18n="p4_d">Reporte con fotos y recomendaciones preventivas.</p></div>
+    </div>
+</section>
+
+<!-- Galería -->
+<section id="galeria" class="max-w-7xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold mb-6" data-i18n="gallery_title">Galería</h2>
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <img src="/assets/g1.jpg" class="w-full h-56 object-cover rounded-xl" alt="Jardinería"/>
+        <img src="/assets/g2.jpg" class="w-full h-56 object-cover rounded-xl" alt="Limpieza"/>
+        <img src="/assets/g3.jpg" class="w-full h-56 object-cover rounded-xl" alt="Mantenimiento"/>
+        <img src="/assets/g4.jpg" class="w-full h-56 object-cover rounded-xl" alt="Airbnb"/>
+        <img src="/assets/g5.jpg" class="w-full h-56 object-cover rounded-xl" alt="Condominios"/>
+        <img src="/assets/g6.jpg" class="w-full h-56 object-cover rounded-xl" alt="Hoteles"/>
+    </div>
+</section>
+
+<!-- Testimonios -->
+<section id="testimonios" class="max-w-7xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold mb-6" data-i18n="testimonials_title">Testimonios</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="card p-6">
+            <div class="flex items-center gap-3">
+                <img src="/assets/av1.jpg" class="h-10 w-10 rounded-full object-cover" alt="Cliente 1">
                 <div>
-                    <label class="block text-sm font-semibold mb-1">Categoría</label>
-                    <select id="categoria" class="w-full rounded-lg border px-3 py-2" required>
-                        <option value="">Seleccione categoría</option>
-                        <option value="jardin">Jardinería (por m²)</option>
-                        <option value="limpieza">Limpieza (por m²)</option>
-                        <option value="mantenimiento">Reparación/Mantenimiento (por hora)</option>
-                    </select>
-                    <div class="invalid-feedback hidden"></div>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Servicio</label>
-                    <select id="servicio" class="w-full rounded-lg border px-3 py-2" required disabled>
-                        <option value="">Seleccione servicio</option>
-                    </select>
-                    <div class="invalid-feedback hidden"></div>
-                </div>
-                <div id="areaBox">
-                    <label class="block text-sm font-semibold mb-1">Área (m²)</label>
-                    <input id="area" type="number" value="80" min="1" class="w-full rounded-lg border px-3 py-2" required disabled>
-                    <div class="invalid-feedback hidden"></div>
-                </div>
-                <div id="hoursBox" class="hidden">
-                    <label class="block text-sm font-semibold mb-1">Horas</label>
-                    <input id="horas" type="number" value="2" step="0.5" min="0.5" class="w-full rounded-lg border px-3 py-2" disabled>
-                    <div class="invalid-feedback hidden"></div>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Fecha tentativa del trabajo</label>
-                    <input id="fechaTrabajo" type="date" class="w-full rounded-lg border px-3 py-2" required disabled>
-                    <div class="invalid-feedback hidden"></div>
+                    <div class="font-semibold">María R.</div>
+                    <div class="text-xs text-slate-500" data-i18n="t1_role">Host Airbnb · Poás</div>
                 </div>
             </div>
-
-            <!-- Insumos/Materiales -->
-            <div id="matCard" class="mt-6 card p-5">
-                <div class="flex items-center justify-between flex-wrap gap-3">
-                    <h4 class="text-base font-bold">Insumos / Materiales</h4>
-                    <span class="badge bg-black/5 text-slate-700">Se suman con 10% manejo logístico</span>
-                </div>
-                <div class="overflow-x-auto mt-3">
-                    <table class="w-full">
-                        <thead class="text-sm bg-slate-50">
-                        <tr>
-                            <th class="text-left p-2">Ítem</th>
-                            <th class="text-right p-2">Precio unit. (₡)</th>
-                            <th class="text-right p-2">Cantidad</th>
-                            <th class="text-right p-2">Subtotal</th>
-                            <th class="w-8"></th>
-                        </tr>
-                        </thead>
-                        <tbody id="matBody"></tbody>
-                    </table>
-                </div>
-                <div class="mt-3 flex items-center gap-2">
-                    <input id="matNombre" class="rounded-lg border px-3 py-2 w-full md:w-1/2"
-                           placeholder="Agregar ítem personalizado (ej. Pintura premium 1 galón)">
-                    <input id="matPrecio" type="number" step="100" min="0"
-                           class="rounded-lg border px-3 py-2 w-32" placeholder="₡">
-                    <input id="matCantidad" type="number" step="1" min="1"
-                           class="rounded-lg border px-3 py-2 w-24" placeholder="Cant.">
-                    <button type="button" id="addMat" class="px-3 py-2 rounded-lg text-white font-semibold"
-                            style="background:#1E88C7">Añadir</button>
+            <p class="mt-3 text-sm" data-i18n="t1_txt">“Excelente turnover, llegaron a tiempo y dejaron todo impecable. ¡Recomendados!”</p>
+        </div>
+        <div class="card p-6">
+            <div class="flex items-center gap-3">
+                <img src="/assets/av2.jpg" class="h-10 w-10 rounded-full object-cover" alt="Cliente 2">
+                <div>
+                    <div class="font-semibold">Carlos T.</div>
+                    <div class="text-xs text-slate-500" data-i18n="t2_role">Administrador · Condominio</div>
                 </div>
             </div>
-
-            <!-- Recargo por desplazamiento -->
-            <div class="mt-6 grid md:grid-cols-3 gap-4">
-                <div class="col-span-1 flex items-center gap-2">
-                    <input id="aplicarRecargo" type="checkbox" class="h-5 w-5">
-                    <label for="aplicarRecargo" class="text-sm font-semibold">
-                        Aplicar recargo por desplazamiento
-                    </label>
-                </div>
+            <p class="mt-3 text-sm" data-i18n="t2_txt">“Buenas prácticas de seguridad y comunicación clara. Reporte con fotos muy útil.”</p>
+        </div>
+        <div class="card p-6">
+            <div class="flex items-center gap-3">
+                <img src="/assets/av3.jpg" class="h-10 w-10 rounded-full object-cover" alt="Cliente 3">
                 <div>
-                    <label class="block text-sm font-semibold mb-1">Zona (opcional)</label>
-                    <select id="zonaRecargo" class="w-full rounded-lg border px-3 py-2" disabled>
-                        <option value="0">Dentro de Poás (sin recargo)</option>
-                        <option value="2675">Alajuela centro (+₡2.675)</option>
-                        <option value="5350">Grecia / Sarchí (+₡5.350)</option>
-                        <option value="8025">San Ramón / Heredia (+₡8.025)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Recargo fijo (₡)</label>
-                    <input id="montoRecargo" type="number" step="100" value="0" min="0"
-                           class="w-full rounded-lg border px-3 py-2" disabled>
-                    <p class="text-xs text-slate-500 mt-1">Se sumará al total solo si está marcado.</p>
+                    <div class="font-semibold">Hotel Azul</div>
+                    <div class="text-xs text-slate-500" data-i18n="t3_role">Hotel · Alajuela</div>
                 </div>
             </div>
+            <p class="mt-3 text-sm" data-i18n="t3_txt">“Soporte de urgencias 24 h cuando lo necesitamos. Muy profesionales.”</p>
+        </div>
+    </div>
+</section>
 
+<!-- Cobertura -->
+<section class="max-w-7xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold mb-2" data-i18n="coverage_title">Cobertura</h2>
+    <p class="text-slate-600" data-i18n="coverage_txt">Poás y Alajuela Centro. Para otras locaciones, se cotiza el traslado.</p>
+    <img src="/assets/map.jpg" class="w-full h-64 object-cover rounded-xl mt-4" alt="Cobertura Poás y Alajuela Centro">
+</section>
 
-            <!-- Botón Calcular -->
-<!--            <div class="mt-4">-->
-<!--                <button type="submit" id="calcularBtn" class="btn text-white px-6" style="background:#1E88C7">-->
-<!--                    Calcular cotización-->
-<!--                </button>-->
-<!--            </div>-->
+<!-- FAQ -->
+<section id="faq" class="max-w-7xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold mb-6" data-i18n="faq_title">Preguntas frecuentes</h2>
+    <div class="grid md:grid-cols-2 gap-6 text-sm">
+        <div class="card p-5">
+            <h4 class="font-semibold" data-i18n="faq1_q">¿Materiales incluidos?</h4>
+            <p class="text-slate-600" data-i18n="faq1_a">Incluimos básicos; materiales especiales y posobra se cotizan aparte (+10% manejo).</p>
+        </div>
+        <div class="card p-5">
+            <h4 class="font-semibold" data-i18n="faq2_q">¿Cómo se calcula el precio?</h4>
+            <p class="text-slate-600" data-i18n="faq2_a">Por m² con productividades (jardinería/limpieza) o por hora (mantenimiento). Cotiza para detalle.</p>
+        </div>
+        <div class="card p-5">
+            <h4 class="font-semibold" data-i18n="faq3_q">¿Reprogramaciones?</h4>
+            <p class="text-slate-600" data-i18n="faq3_a">Sin costo con 24 h de aviso; urgencias sujetas a disponibilidad.</p>
+        </div>
+        <div class="card p-5">
+            <h4 class="font-semibold" data-i18n="faq4_q">¿Garantía?</h4>
+            <p class="text-slate-600" data-i18n="faq4_a">Revisamos incidencias reportadas en 48 h y realizamos corrección si aplica.</p>
+        </div>
+    </div>
+</section>
 
-            <!-- Resultados -->
-            <div class="mt-6 grid md:grid-cols-4 gap-4">
-                <div class="p-4 rounded-xl border bg-white">
-                    <div class="text-sm text-slate-500">Horas estimadas</div>
-                    <div id="resHoras" class="text-2xl font-bold">—</div>
-                </div>
-                <div class="p-4 rounded-xl border bg-white">
-                    <div class="text-sm text-slate-500">Costo mano de obra (₡)</div>
-                    <div id="resCosto" class="text-2xl font-bold">—</div>
-                </div>
-                <div class="p-4 rounded-xl border bg-white">
-                    <div class="text-sm text-slate-500">Materiales + manejo (₡)</div>
-                    <div id="resMat" class="text-2xl font-bold">—</div>
-                </div>
-                <div class="p-4 rounded-xl border bg-white">
-                    <div class="text-sm text-slate-500">Precio sugerido</div>
-                    <div id="resPrecio" class="text-2xl font-bold">—</div>
-                </div>
+<!-- Contacto -->
+<section id="contacto" class="max-w-7xl mx-auto px-4 py-12">
+    <div class="card p-6">
+        <h2 class="text-2xl font-bold" data-i18n="contact_title">Contacto</h2>
+        <p class="text-slate-600 text-sm mt-1" data-i18n="contact_sub">Cuéntanos sobre tu propiedad y te contactamos.</p>
+
+        <form id="contactForm" class="grid md:grid-cols-2 gap-4 mt-4">
+            <input class="rounded-lg border px-3 py-2" id="name" placeholder="Nombre" aria-label="Nombre">
+            <input class="rounded-lg border px-3 py-2" id="email" type="email" placeholder="Email" aria-label="Email">
+            <input class="rounded-lg border px-3 py-2" id="phone" placeholder="WhatsApp" aria-label="WhatsApp">
+            <select class="rounded-lg border px-3 py-2" id="serviceType" aria-label="Servicio">
+                <option value="Jardinería">Jardinería</option>
+                <option value="Limpieza">Limpieza</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+            </select>
+            <input class="rounded-lg border px-3 py-2" id="size" placeholder="m² u horas" aria-label="m2 u horas">
+            <input class="rounded-lg border px-3 py-2" id="date" type="date" aria-label="Fecha tentativa">
+            <textarea class="rounded-lg border px-3 py-2 md:col-span-2" id="message" rows="3" placeholder="Mensaje"></textarea>
+            <div class="md:col-span-2 flex flex-wrap gap-3">
+                <button type="button" id="sendEmail" class="btn text-white" style="background:#1E88C7" data-i18n="contact_email">Enviar por email</button>
+                <button type="button" id="sendWA" class="btn text-white" style="background:#74A643" data-i18n="contact_wa">Enviar por WhatsApp</button>
             </div>
         </form>
-    </section>
-
-    <!-- Formulario de envío -->
-    <section class="card p-5">
-        <h3 class="text-lg font-bold mb-4">Envío de Cotización</h3>
-
-        <div class="grid md:grid-cols-2 gap-6">
-            <!-- Columna izquierda -->
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Nombre del cliente</label>
-                    <input type="text" id="nombreCliente" class="w-full rounded-lg border px-3 py-2" required>
-                    <div class="invalid-feedback hidden"></div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Teléfono</label>
-                    <input type="tel" id="telefonoCliente" class="w-full rounded-lg border px-3 py-2"
-                           placeholder="+506 XXXX XXXX" required>
-                    <div class="invalid-feedback hidden"></div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Correo electrónico</label>
-                    <input type="email" id="emailCliente" class="w-full rounded-lg border px-3 py-2" placeholder="XXXX@XXXX.COM" required>
-                    <div class="invalid-feedback hidden"></div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Dirección</label>
-                    <input type="text" id="direccionTrabajo" class="w-full rounded-lg border px-3 py-2" required>
-                    <div class="invalid-feedback hidden"></div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Observaciones</label>
-                    <textarea id="observaciones" rows="2"
-                              class="w-full rounded-lg border px-3 py-2"></textarea>
-                </div>
-            </div>
-
-            <!-- Columna derecha -->
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold mb-1">Fotos del sitio (opcional)</label>
-                    <input type="file" id="fotos" multiple accept="image/*"
-                           class="w-full rounded-lg border px-3 py-2">
-                    <p class="text-xs text-slate-500 mt-1">Máximo 10 imágenes JPG/PNG (5MB c/u)</p>
-                </div>
-
-                <div id="preview" class="grid grid-cols-3 gap-2"></div>
-
-                <!-- Resumen y totales -->
-                <div class="card p-4 bg-slate-50 mt-4">
-                    <div class="flex items-center justify-between mt-1">
-                        <span class="font-semibold">Total CRC</span>
-                        <span id="totalColones" class="text-xl font-bold">—</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="font-semibold text-sm">Total USD</span>
-                        <span id="totalCotizacion" class="text-sm">—</span>
-                    </div>
-                </div>
-
-                <!-- Botones de envío -->
-                <div class="flex gap-2">
-                    <button type="button" id="enviarEmail"
-                            class="btn text-white flex-1" style="background:#1E88C7">
-                        Enviar por email
-                    </button>
-                    <button type="button" id="enviarWhatsApp"
-                            class="btn text-white flex-1" style="background:#25D366">
-                        Enviar por WhatsApp
-                    </button>
-                </div>
-
-                <button type="button" id="descargarPDF"
-                        class="btn text-white w-full" style="background:#F4A300">
-                    Descargar PDF
-                </button>
-            </div>
-        </div>
-    </section>
-</main>
-
-<!-- Loading Overlay -->
-<div id="loading-overlay" class="fixed inset-0 bg-black/50 hidden items-center justify-center">
-    <div class="bg-white p-4 rounded-lg">
-        <div class="animate-spin rounded-full h-8 w-8 border-4 border-slate-200 border-t-blue-500"></div>
     </div>
-</div>
+</section>
 
-<!-- Scripts -->
-<script src="js/calculator.js"></script>
-<script src="js/imageHandler.js"></script>
-<script src="js/formHandler.js"></script>
+<!-- Footer -->
+<footer class="border-t">
+    <div class="max-w-7xl mx-auto px-4 py-8 text-sm flex flex-col md:flex-row gap-2 md:items-center md:justify-between">
+        <div class="flex items-center gap-2">
+            <img src="/assets/logotodocrmini.png" class="h-6 w-auto" alt="TODOCR">
+            <span>© <span id="yr"></span> TODOCR · Poás, Alajuela</span>
+        </div>
+        <div class="text-slate-500">info.todocr@gmail.com · +506 7080 8613</div>
+    </div>
+</footer>
+
+<!-- Botón flotante WhatsApp -->
+<a href="https://wa.me/50670808613?text=Hola%20TODOCR%2C%20quisiera%20una%20cotizaci%C3%B3n" target="_blank"
+   class="fixed bottom-4 right-4 rounded-full shadow-lg px-4 py-3 text-white" style="background:#74A643">
+    WhatsApp
+</a>
+<script src="js/main.js"></script>
 </body>
 </html>

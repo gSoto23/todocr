@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>TODOCR · Login Cotizador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body class="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+<div class="card w-full max-w-md p-6">
+    <div class="flex items-center gap-3 mb-4">
+        <a href="./index.html"><img src="/assets/logotodocrmini.png" class="h-10" alt="TODOCR"></a>
+        <h1 class="text-xl font-bold">Login Cotizador</h1>
+    </div>
+    <p class="text-sm text-slate-600 mb-4">Acceso restringido. Si necesitas ayuda, escribe a info.todocr@gmail.com</p>
+    <form id="loginForm" class="space-y-3">
+        <input id="user" class="w-full rounded-lg border px-3 py-2" placeholder="Usuario" autocomplete="username">
+        <input id="pass" type="password" class="w-full rounded-lg border px-3 py-2" placeholder="Contraseña" autocomplete="current-password">
+        <button class="btn w-full text-white login-btn">Ingresar</button>
+    </form>
+    <p class="text-xs text-slate-500 mt-4">Nota: este login es básico (front-end). Para producción real se recomienda backend con sesiones/JWT.</p>
+</div>
+<script src="js/login.js"></script>
+</body>
+</html>

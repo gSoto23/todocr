@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>TODOCR · Cotizador Rápido</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800">
+<script>
+    // Protección de ruta - debe ir al inicio
+    (function checkAuth() {
+        const AUTH_KEY = 'todocr_auth';
+        const LOGIN_PATH = '../login.html';
+
+        if (localStorage.getItem(AUTH_KEY) !== 'authenticated') {
+            window.location.href = LOGIN_PATH;
+        }
+    })();
+</script>
+<!-- Header -->
+<header class="bg-white border-b">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
+       <a href="https://www.todocr.com/"><img src="../assets/logotodocr.png" alt="TODOCR" class="h-10 w-auto"></a>
+        <div>
+            <h1 class="text-xl md:text-2xl font-bold tracking-tight">· Cotizador Rápido</h1>
+            <p class="text-sm text-slate-600">Jardinería · Limpieza · Reparaciones</p>
+        </div>
+        <div class="ml-auto hidden md:flex gap-2">
+            <span class="badge bg-black/5 text-slate-700">WhatsApp: +506 7080 8613</span>
+            <span class="badge bg-black/5 text-slate-700">info.todocr@gmail.com</span>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-6 space-y-8">
+    <!-- Categorías -->
+    <section class="grid md:grid-cols-3 gap-6">
+        <!-- Jardinería -->
+        <div class="card p-5">
+            <div class="flex items-center gap-3">
+                <img src="../assets/jardineriaIcon.png" class="h-8 w-8" alt="Jardinería">
+                <h2 class="text-lg font-bold" style="color:#74A643">Jardinería</h2>
+            </div>
+            <ul class="mt-3 text-sm leading-6">
+                <li>• Corte de césped y bordes</li>
+                <li>• Poda de arbustos y árboles</li>
+                <li>• Riego y abonado</li>
+                <li>• Limpieza de zonas verdes</li>
+                <li>• Diseño y reposición de plantas</li>
+            </ul>
+        </div>
+        <!-- Limpieza -->
+        <div class="card p-5">
+            <div class="flex items-center gap-3">
+                <img src="../assets/limpiezaicon.png" class="h-8 w-8" alt="Limpieza">
+                <h2 class="text-lg font-bold" style="color:#1E88C7">Limpieza</h2>
+            </div>
+            <ul class="mt-3 text-sm leading-6">
+                <li>• Turnover Airbnb (check-in/check-out)</li>
+                <li>• Limpieza profunda</li>
+                <li>• Limpieza de vidrios interior/exterior</li>
+                <li>• Post-remodelación</li>
+                <li>• Sanitización focal</li>
+            </ul>
+        </div>
+        <!-- Reparaciones -->
+        <div class="card p-5">
+            <div class="flex items-center gap-3">
+                <img src="../assets/fixicon.png" class="h-8 w-8" alt="Reparación">
+                <h2 class="text-lg font-bold" style="color:#F4A300">Reparación y Mantenimiento</h2>
+            </div>
+            <ul class="mt-3 text-sm leading-6">
+                <li>• Electricidad y fontanería básica</li>
+                <li>• Pintura interior/exterior y de techos</li>
+                <li>• Instalaciones menores (TV, repisas, cortinas)</li>
+                <li>• Diagnóstico preventivo + reporte fotográfico</li>
+                <li>• Urgencias 24 horas</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Calculadora -->
+    <section class="card p-5">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+            <h3 class="text-lg font-bold">Calculadora de Precios</h3>
+            <div class="badge bg-black/5 text-slate-700">TC ₡535/USD · Margen MO 40% · Materiales +10% manejo</div>
+        </div>
+
+        <form id="calculator-form" class="mt-6">
+            <!-- Selección -->
+            <div class="grid md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Categoría</label>
+                    <select id="categoria" class="w-full rounded-lg border px-3 py-2" required>
+                        <option value="">Seleccione categoría</option>
+                        <option value="jardin">Jardinería (por m²)</option>
+                        <option value="limpieza">Limpieza (por m²)</option>
+                        <option value="mantenimiento">Reparación/Mantenimiento (por hora)</option>
+                    </select>
+                    <div class="invalid-feedback hidden"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Servicio</label>
+                    <select id="servicio" class="w-full rounded-lg border px-3 py-2" required disabled>
+                        <option value="">Seleccione servicio</option>
+                    </select>
+                    <div class="invalid-feedback hidden"></div>
+                </div>
+                <div id="areaBox">
+                    <label class="block text-sm font-semibold mb-1">Área (m²)</label>
+                    <input id="area" type="number" value="80" min="1" class="w-full rounded-lg border px-3 py-2" required disabled>
+                    <div class="invalid-feedback hidden"></div>
+                </div>
+                <div id="hoursBox" class="hidden">
+                    <label class="block text-sm font-semibold mb-1">Horas</label>
+                    <input id="horas" type="number" value="2" step="0.5" min="0.5" class="w-full rounded-lg border px-3 py-2" disabled>
+                    <div class="invalid-feedback hidden"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Fecha tentativa del trabajo</label>
+                    <input id="fechaTrabajo" type="date" class="w-full rounded-lg border px-3 py-2" required disabled>
+                    <div class="invalid-feedback hidden"></div>
+                </div>
+            </div>
+
+            <!-- Insumos/Materiales -->
+            <div id="matCard" class="mt-6 card p-5">
+                <div class="flex items-center justify-between flex-wrap gap-3">
+                    <h4 class="text-base font-bold">Insumos / Materiales</h4>
+                    <span class="badge bg-black/5 text-slate-700">Se suman con 10% manejo logístico</span>
+                </div>
+                <div class="overflow-x-auto mt-3">
+                    <table class="w-full">
+                        <thead class="text-sm bg-slate-50">
+                        <tr>
+                            <th class="text-left p-2">Ítem</th>
+                            <th class="text-right p-2">Precio unit. (₡)</th>
+                            <th class="text-right p-2">Cantidad</th>
+                            <th class="text-right p-2">Subtotal</th>
+                            <th class="w-8"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="matBody"></tbody>
+                    </table>
+                </div>
+                <div class="mt-3 flex items-center gap-2">
+                    <input id="matNombre" class="rounded-lg border px-3 py-2 w-full md:w-1/2"
+                           placeholder="Agregar ítem personalizado (ej. Pintura premium 1 galón)">
+                    <input id="matPrecio" type="number" step="100" min="0"
+                           class="rounded-lg border px-3 py-2 w-32" placeholder="₡">
+                    <input id="matCantidad" type="number" step="1" min="1"
+                           class="rounded-lg border px-3 py-2 w-24" placeholder="Cant.">
+                    <button type="button" id="addMat" class="px-3 py-2 rounded-lg text-white font-semibold"
+                            style="background:#1E88C7">Añadir</button>
+                </div>
+            </div>
+
+            <!-- Recargo por desplazamiento -->
+            <div class="mt-6 grid md:grid-cols-3 gap-4">
+                <div class="col-span-1 flex items-center gap-2">
+                    <input id="aplicarRecargo" type="checkbox" class="h-5 w-5">
+                    <label for="aplicarRecargo" class="text-sm font-semibold">
+                        Aplicar recargo por desplazamiento
+                    </label>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Zona (opcional)</label>
+                    <select id="zonaRecargo" class="w-full rounded-lg border px-3 py-2" disabled>
+                        <option value="0">Dentro de Poás (sin recargo)</option>
+                        <option value="2675">Alajuela centro (+₡2.675)</option>
+                        <option value="5350">Grecia / Sarchí (+₡5.350)</option>
+                        <option value="8025">San Ramón / Heredia (+₡8.025)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Recargo fijo (₡)</label>
+                    <input id="montoRecargo" type="number" step="100" value="0" min="0"
+                           class="w-full rounded-lg border px-3 py-2" disabled>
+                    <p class="text-xs text-slate-500 mt-1">Se sumará al total solo si está marcado.</p>
+                </div>
+            </div>
+
+
+            <!-- Botón Calcular -->
+<!--            <div class="mt-4">-->
+<!--                <button type="submit" id="calcularBtn" class="btn text-white px-6" style="background:#1E88C7">-->
+<!--                    Calcular cotización-->
+<!--                </button>-->
+<!--            </div>-->
+
+            <!-- Resultados -->
+            <div class="mt-6 grid md:grid-cols-4 gap-4">
+                <div class="p-4 rounded-xl border bg-white">
+                    <div class="text-sm text-slate-500">Horas estimadas</div>
+                    <div id="resHoras" class="text-2xl font-bold">—</div>
+                </div>
+                <div class="p-4 rounded-xl border bg-white">
+                    <div class="text-sm text-slate-500">Costo mano de obra (₡)</div>
+                    <div id="resCosto" class="text-2xl font-bold">—</div>
+                </div>
+                <div class="p-4 rounded-xl border bg-white">
+                    <div class="text-sm text-slate-500">Materiales + manejo (₡)</div>
+                    <div id="resMat" class="text-2xl font-bold">—</div>
+                </div>
+                <div class="p-4 rounded-xl border bg-white">
+                    <div class="text-sm text-slate-500">Precio sugerido</div>
+                    <div id="resPrecio" class="text-2xl font-bold">—</div>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <!-- Formulario de envío -->
+    <section class="card p-5">
+        <h3 class="text-lg font-bold mb-4">Envío de Cotización</h3>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Columna izquierda -->
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Nombre del cliente</label>
+                    <input type="text" id="nombreCliente" class="w-full rounded-lg border px-3 py-2" required>
+                    <div class="invalid-feedback hidden"></div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Teléfono</label>
+                    <input type="tel" id="telefonoCliente" class="w-full rounded-lg border px-3 py-2"
+                           placeholder="+506 XXXX XXXX" required>
+                    <div class="invalid-feedback hidden"></div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Correo electrónico</label>
+                    <input type="email" id="emailCliente" class="w-full rounded-lg border px-3 py-2" placeholder="XXXX@XXXX.COM" required>
+                    <div class="invalid-feedback hidden"></div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Dirección</label>
+                    <input type="text" id="direccionTrabajo" class="w-full rounded-lg border px-3 py-2" required>
+                    <div class="invalid-feedback hidden"></div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Observaciones</label>
+                    <textarea id="observaciones" rows="2"
+                              class="w-full rounded-lg border px-3 py-2"></textarea>
+                </div>
+            </div>
+
+            <!-- Columna derecha -->
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Fotos del sitio (opcional)</label>
+                    <input type="file" id="fotos" multiple accept="image/*"
+                           class="w-full rounded-lg border px-3 py-2">
+                    <p class="text-xs text-slate-500 mt-1">Máximo 10 imágenes JPG/PNG (5MB c/u)</p>
+                </div>
+
+                <div id="preview" class="grid grid-cols-3 gap-2"></div>
+
+                <!-- Resumen y totales -->
+                <div class="card p-4 bg-slate-50 mt-4">
+                    <div class="flex items-center justify-between mt-1">
+                        <span class="font-semibold">Total CRC</span>
+                        <span id="totalColones" class="text-xl font-bold">—</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-sm">Total USD</span>
+                        <span id="totalCotizacion" class="text-sm">—</span>
+                    </div>
+                </div>
+
+                <!-- Botones de envío -->
+                <div class="flex gap-2">
+                    <button type="button" id="enviarEmail"
+                            class="btn text-white flex-1" style="background:#1E88C7">
+                        Enviar por email
+                    </button>
+                    <button type="button" id="enviarWhatsApp"
+                            class="btn text-white flex-1" style="background:#25D366">
+                        Enviar por WhatsApp
+                    </button>
+                </div>
+
+                <button type="button" id="descargarPDF"
+                        class="btn text-white w-full" style="background:#F4A300">
+                    Descargar PDF
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" class="fixed inset-0 bg-black/50 hidden items-center justify-center">
+    <div class="bg-white p-4 rounded-lg">
+        <div class="animate-spin rounded-full h-8 w-8 border-4 border-slate-200 border-t-blue-500"></div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/calculator.js"></script>
+<script src="js/imageHandler.js"></script>
+<script src="js/formHandler.js"></script>
+</body>
+</html>

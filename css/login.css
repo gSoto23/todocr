@@ -1,0 +1,20 @@
+.login-btn {
+    background: var(--tp-green);
+}
+
+.login-btn:hover {
+    opacity: 0.9;
+}
+
+#loginForm input {
+    transition: border-color 0.2s;
+}
+
+#loginForm input:focus {
+    outline: none;
+    border-color: var(--tp-green);
+}
+
+#loginForm input::placeholder {
+    color: #94a3b8;
+}
