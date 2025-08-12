@@ -21,35 +21,52 @@ class EmailService {
 
             // Procesar archivos adjuntos si existen
             if (attachments.length > 0) {
-                msg.attachments = attachments.map((file, index) => ({
-                    content: file.buffer.toString('base64'),
-                    filename: file.originalname || `attachment${index + 1}${this.getFileExtension(file.mimetype)}`,
-                    type: file.mimetype,
-                    disposition: 'attachment'
-                }));
-            }
+                msg.attachments = attachments.map((file, index) => {
+                    // Asegurarse de que el contenido sea un Buffer antes de convertirlo
+                    const content = Buffer.isBuffer(file.content)
+                        ? file.content.toString('base64')
+                        : file.content;
 
-            // Validar tamaño total de adjuntos
-            if (msg.attachments) {
-                const totalSize = msg.attachments.reduce((sum, attachment) =>
-                    sum + Buffer.from(attachment.content, 'base64').length, 0);
+                    return {
+                        content,
+                        filename: file.filename || `attachment${index + 1}${this.getFileExtension(file.type)}`,
+                        type: file.type,
+                        disposition: 'attachment'
+                    };
+                });
 
-                // SendGrid tiene un límite de 30MB para el total de adjuntos
-                const MAX_ATTACHMENT_SIZE = 30 * 1024 * 1024; // 30MB en bytes
+                // Validar tamaño total de adjuntos
+                const totalSize = msg.attachments.reduce((sum, attachment) => {
+                    const contentSize = Buffer.from(attachment.content, 'base64').length;
+                    console.log(`Archivo ${attachment.filename}: ${contentSize} bytes`);
+                    return sum + contentSize;
+                }, 0);
+
+                console.log(`Tamaño total de adjuntos: ${totalSize} bytes`);
+
+                const MAX_ATTACHMENT_SIZE = 30 * 1024 * 1024; // 30MB
                 if (totalSize > MAX_ATTACHMENT_SIZE) {
                     throw new Error('El tamaño total de los archivos adjuntos excede el límite de 30MB');
                 }
             }
 
-            await sgMail.send(msg);
+            console.log('Enviando email con SendGrid:', {
+                to,
+                from: config.fromEmail,
+                subject,
+                attachmentsCount: attachments.length
+            });
+
+            const result = await sgMail.send(msg);
+            console.log('Email enviado exitosamente:', result);
             return { success: true };
         } catch (error) {
-            console.error('Error sending email:', error);
+            console.error('Error detallado al enviar email:', error);
+
             if (error.response) {
                 console.error('SendGrid API Error:', error.response.body);
             }
 
-            // Crear un mensaje de error más amigable
             let errorMessage = 'Error al enviar el email';
             if (error.message.includes('tamaño total')) {
                 errorMessage = error.message;

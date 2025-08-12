@@ -87,22 +87,34 @@ class ImageHandler {
         });
     }
 
-    clear() {
-        this.previewContainer.innerHTML = '';
-        this.images = [];
-        this.fileInput.value = '';
-    }
-
     getImages() {
         return this.images;
     }
 
+    clearImages() {
+        this.images = [];
+        if (this.previewContainer) {
+            this.previewContainer.innerHTML = '';
+        }
+    }
+
+    getFiles() {
+        return Array.from(this.images || []);
+    }
+
     // Compresión de imágenes antes de envío (opcional)
     async compressImage(file) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
+            if (!file || !(file instanceof File)) {
+                reject(new Error('Archivo inválido'));
+                return;
+            }
+
             const reader = new FileReader();
+
             reader.onload = (e) => {
                 const img = new Image();
+
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
@@ -126,17 +138,29 @@ class ImageHandler {
                     ctx.drawImage(img, 0, 0, width, height);
 
                     canvas.toBlob((blob) => {
-                        resolve(new File([blob], file.name, {
+                        if (!blob) {
+                            reject(new Error('Error al comprimir imagen'));
+                            return;
+                        }
+
+                        const compressedFile = new File([blob], file.name, {
                             type: 'image/jpeg',
                             lastModified: Date.now()
-                        }));
+                        });
+
+                        resolve(compressedFile);
                     }, 'image/jpeg', 0.8);
                 };
+
+                img.onerror = () => reject(new Error('Error al cargar imagen'));
                 img.src = e.target.result;
             };
+
+            reader.onerror = () => reject(new Error('Error al leer archivo'));
             reader.readAsDataURL(file);
         });
     }
+
 }
 
 // Initialize the image handler

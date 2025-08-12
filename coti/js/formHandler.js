@@ -10,6 +10,7 @@ class FormHandler {
         this.API_CONFIG = {
             BASE_URL: 'http://localhost:3000',
             ENDPOINTS: {
+                QUOTE: '/api/email/quote',
                 CONTACT: '/api/email/contact'
             },
             WHATSAPP: {
@@ -17,6 +18,7 @@ class FormHandler {
             }
         };
     }
+
 
     initializeElements() {
         const elements = {
@@ -65,8 +67,14 @@ class FormHandler {
         }
 
         document.addEventListener('calculoActualizado', (event) => {
-            this.totalUSD = event.detail.totalUSD;
-            this.totalCRC = event.detail.total;
+            // Verificar si el evento tiene los datos necesarios
+            if (event.detail) {
+                this.totalUSD = event.detail.totalUSD || 0;
+                this.totalCRC = event.detail.total || 0;
+            } else {
+                this.totalUSD = 0;
+                this.totalCRC = 0;
+            }
             this.actualizarTotales();
         });
     }
@@ -146,16 +154,34 @@ class FormHandler {
     }
 
     recopilarDatos() {
+        // Calcular totales
+        const subtotal = this.totalCRC;
+        const iva = subtotal * 0.13;
+        const total = subtotal + iva;
+
+        // Calcular total de materiales
         const materiales = Array.from(this.matBody?.getElementsByTagName('tr') || [])
             .map(fila => {
                 const celdas = fila.getElementsByTagName('td');
+                const precio = parseFloat(celdas[1]?.textContent?.replace(/[^0-9.-]+/g, '') || 0);
+                const cantidad = parseFloat(celdas[2]?.textContent || 0);
+                const subtotal = parseFloat(celdas[3]?.textContent?.replace(/[^0-9.-]+/g, '') || 0);
+
                 return {
                     nombre: celdas[0]?.textContent || '',
-                    precio: celdas[1]?.textContent || '',
-                    cantidad: celdas[2]?.textContent || '',
-                    subtotal: celdas[3]?.textContent || ''
+                    precio: precio,
+                    cantidad: cantidad,
+                    subtotal: subtotal
                 };
             });
+
+        const totalMateriales = materiales.reduce((sum, mat) => sum + mat.subtotal, 0);
+
+        // Obtener monto de recargo (desplazamiento)
+        const montoRecargo = parseFloat(this.montoRecargo?.value || 0);
+
+        // Calcular mano de obra (subtotal - materiales - recargo)
+        const manoDeObra = subtotal - totalMateriales - montoRecargo;
 
         return {
             cliente: {
@@ -169,13 +195,19 @@ class FormHandler {
                 tipo: this.servicio?.value || '',
                 fecha: this.fechaTrabajo?.value || '',
                 area: this.area?.value || '',
-                horas: this.horas?.value || ''
+                horasEstimadas: this.horas?.value || ''
             },
-            materiales,
+            costos: {
+                manoDeObra: manoDeObra,
+                totalMateriales: totalMateriales,
+                desplazamiento: montoRecargo > 0 ? montoRecargo : null
+            },
+            materiales: materiales,
             observaciones: this.observaciones?.value || '',
-            recargo: this.montoRecargo?.value || '0',
             totales: {
-                colones: this.totalCRC,
+                subtotal: subtotal,
+                iva: iva,
+                total: total,
                 dolares: this.totalUSD
             }
         };
@@ -187,21 +219,35 @@ class FormHandler {
         try {
             this.mostrarLoading(true);
             const datos = this.recopilarDatos();
-            const formData = this.prepararFormData(datos);
 
+            // Validación adicional de los datos
+            if (!datos.cliente || !datos.servicio || !datos.totales) {
+                throw new Error('Faltan datos requeridos para la cotización');
+            }
+
+            console.log('Preparando FormData...');
+            const formData = await this.prepararFormData(datos);
+
+            // Log para verificar el contenido del FormData
+            for (let pair of formData.entries()) {
+                console.log(pair[0], pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]);
+            }
+
+            console.log('Enviando solicitud...');
             const response = await fetch(
-                `${this.API_CONFIG.BASE_URL}${this.API_CONFIG.ENDPOINTS.CONTACT}`,
+                `${this.API_CONFIG.BASE_URL}${this.API_CONFIG.ENDPOINTS.QUOTE}`,
                 {
                     method: 'POST',
                     body: formData
                 }
             );
 
+            const data = await response.json();
+
             if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status}`);
+                throw new Error(data.message || `Error HTTP: ${response.status}`);
             }
 
-            const data = await response.json();
             if (data.success) {
                 this.mostrarNotificacion('success', 'Cotización enviada exitosamente por email');
                 this.limpiarFormulario();
@@ -216,121 +262,34 @@ class FormHandler {
         }
     }
 
-    prepararFormData(datos) {
+    async prepararFormData(datos) {
         const formData = new FormData();
-        const message = this.formatearMensajeEmail(datos);
 
-        // Datos para el email
-        formData.append('to', datos.cliente.email);  // Correo del cliente
-        formData.append('cc', 'info.todocr@gmail.com');  // Correo CC
-        formData.append('name', datos.cliente.nombre);
-        formData.append('phone', datos.cliente.telefono);
+        // Enviar los datos completos como JSON
+        formData.append('datos', JSON.stringify(datos));
+
+        // Datos básicos para el email
+        formData.append('to', datos.cliente.email);
+        formData.append('cc', 'info.todocr@gmail.com');
         formData.append('service', `${datos.servicio.categoria} - ${datos.servicio.tipo}`);
-        formData.append('size', datos.servicio.area || datos.servicio.horas);
-        formData.append('date', datos.servicio.fecha);
-        formData.append('message', message);
 
-        // Procesar imágenes si existe el imageHandler
-        if (window.imageHandler && typeof window.imageHandler.getImages === 'function') {
-            this.adjuntarImagenes(formData);
+        // Procesar imágenes
+        if (window.imageHandler) {
+            const images = window.imageHandler.getImages();
+            console.log('Imágenes a adjuntar:', images.length);
+
+            for (const file of images) {
+                try {
+                    // Opcionalmente comprimir la imagen antes de enviarla
+                    const compressedFile = await window.imageHandler.compressImage(file);
+                    formData.append('attachments', compressedFile, file.name);
+                } catch (error) {
+                    console.error('Error procesando imagen:', error);
+                }
+            }
         }
 
         return formData;
-    }
-
-
-    adjuntarImagenes(formData) {
-        const imagenes = window.imageHandler.getImages() || [];
-        imagenes.forEach((imagen, index) => {
-            try {
-                if (!imagen || !imagen.src) {
-                    console.warn(`Imagen inválida en índice ${index}`);
-                    return;
-                }
-
-                const blob = this.base64ToBlob(imagen.src);
-                if (blob) {
-                    formData.append('attachments', blob, `imagen${index + 1}.jpg`);
-                }
-            } catch (error) {
-                console.error('Error procesando imagen:', error);
-            }
-        });
-    }
-
-    base64ToBlob(base64String) {
-        if (!base64String || typeof base64String !== 'string') {
-            console.warn('String base64 inválido');
-            return null;
-        }
-
-        try {
-            if (base64String instanceof Blob) return base64String;
-            if (base64String.startsWith('blob:')) return null;
-
-            const matches = base64String.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-            if (!matches || matches.length !== 3) {
-                console.warn('Formato de string base64 inválido');
-                return null;
-            }
-
-            const contentType = matches[1];
-            const base64 = matches[2];
-            const byteCharacters = atob(base64);
-            const byteArrays = [];
-
-            for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-                const slice = byteCharacters.slice(offset, offset + 512);
-                const byteNumbers = new Array(slice.length);
-
-                for (let i = 0; i < slice.length; i++) {
-                    byteNumbers[i] = slice.charCodeAt(i);
-                }
-
-                byteArrays.push(new Uint8Array(byteNumbers));
-            }
-
-            return new Blob(byteArrays, { type: contentType });
-        } catch (error) {
-            console.error('Error convirtiendo base64 a blob:', error);
-            return null;
-        }
-    }
-
-    formatearMensajeEmail(datos) {
-        const partes = [
-            'Detalles de la Cotización:',
-            '',
-            `Cliente: ${datos.cliente.nombre}`,
-            `Teléfono: ${datos.cliente.telefono}`,
-            `Email: ${datos.cliente.email}`,
-            `Dirección: ${datos.cliente.direccion}`,
-            '',
-            `Servicio: ${datos.servicio.categoria} - ${datos.servicio.tipo}`,
-            `Fecha: ${new Date(datos.servicio.fecha).toLocaleDateString('es-CR')}`,
-            datos.servicio.area ? `Área: ${datos.servicio.area}m²` : '',
-            datos.servicio.horas ? `Horas: ${datos.servicio.horas}` : '',
-        ];
-
-        // Agregar materiales si existen
-        if (datos.materiales.length > 0) {
-            partes.push('', 'Materiales:');
-            datos.materiales.forEach(material => {
-                partes.push(`- ${material.nombre}: ${material.cantidad} x ₡${material.precio}`);
-            });
-        }
-
-        partes.push(
-            '',
-            `Total: ₡${Math.round(datos.totales.colones).toLocaleString()} ` +
-            `(US$${Math.round(datos.totales.dolares).toLocaleString()})`
-        );
-
-        if (datos.observaciones) {
-            partes.push('', 'Observaciones:', datos.observaciones);
-        }
-
-        return partes.filter(Boolean).join('\n');
     }
 
     mostrarNotificacion(tipo, mensaje) {
@@ -345,19 +304,57 @@ class FormHandler {
     }
 
     limpiarFormulario() {
-        this.form?.reset();
+        // Restablecer el formulario
+        if (this.form) {
+            this.form.reset();
+        }
+
+        // Limpiar campos específicos
+        const camposALimpiar = [
+            'nombreCliente',
+            'telefonoCliente',
+            'emailCliente',
+            'direccionTrabajo',
+            'observaciones',
+            'fechaTrabajo',
+            'area',
+            'horas',
+            'montoRecargo'
+        ];
+
+        camposALimpiar.forEach(campo => {
+            if (this[campo]) {
+                this[campo].value = '';
+            }
+        });
+
+        // Restablecer selects
+        if (this.categoria) {
+            this.categoria.value = '';
+            this.categoria.dispatchEvent(new Event('change'));
+        }
+
+        if (this.servicio) {
+            this.servicio.value = '';
+            this.servicio.disabled = true;
+        }
+
+        // Deshabilitar campos que deberían estar deshabilitados inicialmente
+        if (this.area) this.area.disabled = true;
+        if (this.horas) this.horas.disabled = true;
+        if (this.fechaTrabajo) this.fechaTrabajo.disabled = true;
+
+        // Limpiar tabla de materiales
+        if (this.matBody) {
+            this.matBody.innerHTML = '';
+        }
 
         // Limpiar imágenes si existe el imageHandler
         if (window.imageHandler && typeof window.imageHandler.clearImages === 'function') {
             window.imageHandler.clearImages();
         }
 
-        // Limpiar la tabla de materiales
-        if (this.matBody) {
-            this.matBody.innerHTML = '';
-        }
-
-        // Limpiar el preview de imágenes
+        // Limpiar preview de imágenes
         if (this.preview) {
             this.preview.innerHTML = '';
         }
@@ -366,6 +363,26 @@ class FormHandler {
         this.totalUSD = 0;
         this.totalCRC = 0;
         this.actualizarTotales();
+
+        // Limpiar checkbox y recargo por desplazamiento
+        const aplicarRecargo = document.getElementById('aplicarRecargo');
+        const zonaRecargo = document.getElementById('zonaRecargo');
+        if (aplicarRecargo) {
+            aplicarRecargo.checked = false;
+        }
+        if (zonaRecargo) {
+            zonaRecargo.value = '0';
+            zonaRecargo.disabled = true;
+        }
+
+        // Crear y disparar un evento personalizado con los totales en 0
+        const eventoCalculo = new CustomEvent('calculoActualizado', {
+            detail: {
+                totalUSD: 0,
+                total: 0
+            }
+        });
+        document.dispatchEvent(eventoCalculo);
     }
 
     enviarWhatsApp() {
