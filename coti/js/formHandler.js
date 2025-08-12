@@ -25,6 +25,8 @@ class FormHandler {
             'form': 'calculator-form',
             'totalCotizacion': 'totalCotizacion',
             'totalColones': 'totalColones',
+            'subtotalColones': 'subtotalColones',
+            'ivaColones': 'ivaColones',
             'nombreCliente': 'nombreCliente',
             'telefonoCliente': 'telefonoCliente',
             'emailCliente': 'emailCliente',
@@ -67,28 +69,38 @@ class FormHandler {
         }
 
         document.addEventListener('calculoActualizado', (event) => {
-            // Verificar si el evento tiene los datos necesarios
             if (event.detail) {
                 this.totalUSD = event.detail.totalUSD || 0;
                 this.totalCRC = event.detail.total || 0;
+                this.subtotal = event.detail.subtotal || 0;
+                this.iva = event.detail.iva || 0;
             } else {
                 this.totalUSD = 0;
                 this.totalCRC = 0;
+                this.subtotal = 0;
+                this.iva = 0;
             }
             this.actualizarTotales();
         });
     }
 
     actualizarTotales() {
+        const formatNumber = (num) => Math.round(num).toLocaleString();
+
+        if (this.subtotalColones) {
+            this.subtotalColones.textContent = `₡${formatNumber(this.subtotal)}`;
+        }
+        if (this.ivaColones) {
+            this.ivaColones.textContent = `₡${formatNumber(this.iva)}`;
+        }
+        if (this.totalColones) {
+            this.totalColones.textContent = `₡${formatNumber(this.totalCRC)}`;
+        }
         if (this.totalCotizacion) {
             this.totalCotizacion.textContent = `$${Math.round(this.totalUSD).toLocaleString()}`;
         }
-        if (this.totalColones) {
-            this.totalColones.textContent = `₡${Math.round(this.totalCRC).toLocaleString()}`;
-        }
     }
-
-    validarCamposRequeridos() {
+        validarCamposRequeridos() {
         const camposRequeridos = [
             {
                 campo: this.nombreCliente,
