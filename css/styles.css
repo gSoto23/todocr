@@ -70,3 +70,19 @@ body {
     background-color: var(--tp-green);
     color: white;
 }
+
+.form-control { position: relative; padding-bottom: 10px; }
+.error-input { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+
+.error-message {
+    position: absolute;
+    left: 10px;
+    top: 90%;
+    transform: translateY(2px);
+    color: #ef4444;
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+#contactForm .error-message { grid-column: auto; margin: 0; }
+#contactForm textarea + .error-message { grid-column: auto; }

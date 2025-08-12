@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>TODOCR · Jardinería, Limpieza y Mantenimiento en Poás y Alajuela</title>
-    <meta name="description" content="TODOCR: Servicios profesionales de jardinería, limpieza y mantenimiento para Airbnb, hoteles y condominios en Poás y Alajuela. Tarifas orientativas y cotización rápida."/>
+    <title data-i18n="page_title">TODOCR · Jardinería, Limpieza y Mantenimiento en Poás y Alajuela</title>
+    <meta name="description" data-i18n="page_description" content="TODOCR: Servicios profesionales de jardinería, limpieza y mantenimiento para Airbnb, hoteles y condominios en Poás y Alajuela. Tarifas orientativas y cotización rápida."/>
     <link rel="canonical" href="https://www.todocr.com/"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&display=swap" rel="stylesheet">
@@ -18,60 +18,44 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
         <a href="./index.html"><img src="/assets/logotodocr.png" alt="TODOCR" class="h-10 w-auto"></a>
         <nav class="ml-auto hidden md:flex gap-6 text-sm">
-            <a href="#servicios" class="hover:text-slate-900 nav-link" data-i18n="nav_services">Servicios</a>
-            <a href="#planes" class="hover:text-slate-900 nav-link" data-i18n="nav_plans">Planes</a>
-            <a href="#proceso" class="hover:text-slate-900 nav-link" data-i18n="nav_process">Proceso</a>
-            <a href="#galeria" class="hover:text-slate-900 nav-link" data-i18n="nav_gallery">Galería</a>
-            <a href="#testimonios" class="hover:text-slate-900 nav-link" data-i18n="nav_testimonials">Testimonios</a>
-            <a href="#faq" class="hover:text-slate-900 nav-link" data-i18n="nav_faq">FAQ</a>
-            <a href="#contacto" class="hover:text-slate-900 nav-link" data-i18n="nav_contact">Contacto</a>
+            <a href="#servicios" class="hover:text-slate-900 nav-link" data-i18n="nav_services"></a>
+            <a href="#planes" class="hover:text-slate-900 nav-link" data-i18n="nav_plans"></a>
+            <a href="#proceso" class="hover:text-slate-900 nav-link" data-i18n="nav_process"></a>
+            <a href="#galeria" class="hover:text-slate-900 nav-link" data-i18n="nav_gallery"></a>
+            <a href="#testimonios" class="hover:text-slate-900 nav-link" data-i18n="nav_testimonials"></a>
+            <a href="#faq" class="hover:text-slate-900 nav-link" data-i18n="nav_faq"></a>
+            <a href="#contacto" class="hover:text-slate-900 nav-link" data-i18n="nav_contact"></a>
         </nav>
         <div class="ml-auto flex items-center gap-2">
-            <button id="langToggle" class="text-sm px-3 py-1 rounded border bg-white hover:bg-slate-100 flex items-center gap-2" title="ES/EN">
+            <button id="langToggle" class="text-sm px-3 py-1 rounded border bg-white hover:bg-slate-100 flex items-center gap-2" title="Cambiar idioma">
                 <span id="currentLang">ES</span>
+                <span class="text-slate-400">/</span>
+                <span id="nextLang" class="text-slate-400">EN</span>
             </button>
-
-            <a href="login.html"
-               class="inline-flex items-center justify-center btn text-white p-2 rounded-full hover:opacity-90 transition-opacity"
-               style="background:#74A643"
-               title="Login Cotizador">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     class="h-6 w-6"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <a href="login.html" class="inline-flex items-center justify-center btn text-white p-2 rounded-full hover:opacity-90 transition-opacity" style="background:#74A643" data-i18n-title="nav_login">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
             </a>
         </div>
     </div>
 </header>
 
-
 <!-- Hero -->
 <section class="brand-gradient text-white">
     <div class="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-8 items-center">
         <div>
-            <h1 class="text-3xl md:text-4xl font-bold leading-tight" data-i18n="hero_title">
-                Mantenimiento integral para Airbnb, Hoteles y Condominios
-            </h1>
-            <p class="mt-3 opacity-90" data-i18n="hero_sub">
-                Jardinería, limpieza y reparaciones confiables en Poás y Alajuela Centro. Respuesta ágil, calidad constante.
-            </p>
+            <h1 class="text-3xl md:text-4xl font-bold leading-tight" data-i18n="hero_title"></h1>
+            <p class="mt-3 opacity-90" data-i18n="hero_sub"></p>
             <div class="mt-6 flex gap-3">
-                <a href="#contacto" class="btn text-slate-900" style="background:#F4A300" data-i18n="hero_cta">Solicitar cotización</a>
-                <a href="https://wa.me/50670808613?text=Hola%20TODOCR%2C%20quisiera%20una%20cotizaci%C3%B3n" target="_blank" class="btn border bg-white/10 hover:bg-white/20">
-                    WhatsApp
-                </a>
+                <a href="#contacto" class="btn text-slate-900" style="background:#F4A300" data-i18n="hero_cta"></a>
+                <a href="https://wa.me/50670808613?text=Hola%20TODOCR%2C%20quisiera%20una%20cotizaci%C3%B3n" target="_blank" class="btn border bg-white/10 hover:bg-white/20">WhatsApp</a>
             </div>
         </div>
         <div class="relative">
             <img src="/assets/hero.jpg" alt="Mantenimiento de propiedades" class="rounded-2xl shadow-lg w-full h-64 md:h-80 object-cover">
             <div class="absolute -bottom-4 -right-4 bg-white text-slate-700 px-4 py-3 rounded-xl shadow">
-                <div class="text-xs" data-i18n="hero_badge">Cobertura: Poás · Alajuela Centro</div>
+                <div class="text-xs" data-i18n="hero_badge"></div>
             </div>
         </div>
     </div>
@@ -80,10 +64,8 @@
 <!-- Servicios -->
 <section id="servicios" class="max-w-7xl mx-auto px-4 py-12 space-y-8">
     <header>
-        <h2 class="text-2xl font-bold" data-i18n="services_title">Servicios</h2>
-        <p class="text-slate-600" data-i18n="services_intro">
-            Detallamos qué incluye cada servicio, su modalidad de tarifa y consideraciones.
-        </p>
+        <h2 class="text-2xl font-bold" data-i18n="services_title"></h2>
+        <p class="text-slate-600" data-i18n="services_intro"></p>
     </header>
 
     <div class="grid md:grid-cols-3 gap-6">
@@ -91,78 +73,79 @@
         <div class="card p-6">
             <div class="flex items-center gap-3 mb-2">
                 <img src="/assets/jardineriaIcon.png" class="h-8 w-8" alt="Jardinería">
-                <h3 class="text-lg font-bold" style="color:#74A643" data-i18n="svc_garden">Jardinería (por m²)</h3>
+                <h3 class="text-lg font-bold" style="color:#74A643" data-i18n="svc_garden"></h3>
             </div>
+            <div class="mt-4 text-sm text-slate-600" data-i18n="g0"></div>
+            <br>
             <ul class="text-sm leading-6 list-disc pl-5">
-                <li data-i18n="g1">Corte de césped y bordes — incluye orillado y soplado.</li>
-                <li data-i18n="g2">Poda ligera de arbustos y árboles (altura segura).</li>
-                <li data-i18n="g3">Limpieza de zonas verdes; retiro de hojas.</li>
-                <li data-i18n="g4">Riego y abonado básico.</li>
-                <li data-i18n="g5">Diseño y reposición de plantas (estimativo).</li>
+                <li data-i18n="g1"></li>
+                <li data-i18n="g2"></li>
+                <li data-i18n="g3"></li>
+                <li data-i18n="g4"></li>
+                <li data-i18n="g5"></li>
             </ul>
-            <div class="mt-4 text-sm text-slate-600" data-i18n="g_tariffs">
-                Rendimientos ref.: 200 m²/h (corte), 150 m²/h (limpieza), 50 m²/h (poda). Tarifas orientativas: ₡120–₡160/m² según terreno y accesibilidad.
-            </div>
+            <div class="mt-4 text-sm text-slate-600" data-i18n="g_tariffs"></div>
         </div>
 
         <!-- Limpieza -->
         <div class="card p-6">
             <div class="flex items-center gap-3 mb-2">
                 <img src="/assets/limpiezaicon.png" class="h-8 w-8" alt="Limpieza">
-                <h3 class="text-lg font-bold" style="color:#1E88C7" data-i18n="svc_clean">Limpieza (por m²)</h3>
+                <h3 class="text-lg font-bold" style="color:#1E88C7" data-i18n="svc_clean"></h3>
             </div>
+            <div class="mt-4 text-sm text-slate-600" data-i18n="c0"></div>
+            <div class="mt-4 text-sm text-slate-600" data-i18n="c00"></div>
+            <br>
             <ul class="text-sm leading-6 list-disc pl-5">
-                <li data-i18n="c1">Turnover Airbnb: recámaras, baño, cocina liviana, blancos y básicos.</li>
-                <li data-i18n="c2">Limpieza profunda: desengrase, juntas, interiores de mobiliario.</li>
-                <li data-i18n="c3">Vidrios interior/exterior.</li>
-                <li data-i18n="c4">Post-remodelación.</li>
-                <li data-i18n="c5">Sanitización focal (áreas críticas).</li>
+                <li data-i18n="c1"></li>
+                <li data-i18n="c2"></li>
+                <li data-i18n="c3"></li>
+                <li data-i18n="c4"></li>
+                <li data-i18n="c5"></li>
             </ul>
-            <div class="mt-4 text-sm text-slate-600" data-i18n="c_tariffs">
-                Rendimientos ref.: 50 m²/h (turnover), 30 m²/h (profunda), 20 m²/h (vidrios). Materiales especiales se cotizan aparte.
-            </div>
+            <div class="mt-4 text-sm text-slate-600" data-i18n="c_tariffs"></div>
         </div>
 
         <!-- Mantenimiento -->
         <div class="card p-6">
             <div class="flex items-center gap-3 mb-2">
-                <img src="/assets/fixicon.png" class="h-8 w-8" alt="Reparación y Mantenimiento">
-                <h3 class="text-lg font-bold" style="color:#F4A300" data-i18n="svc_maint">Mantenimiento y Reparaciones</h3>
+                <img src="/assets/fixicon.png" class="h-8 w-8" alt="Mantenimiento">
+                <h3 class="text-lg font-bold" style="color:#F4A300" data-i18n="svc_maint"></h3>
             </div>
+            <div class="mt-4 text-sm text-slate-600" data-i18n="m0"></div>
+            <br>
             <ul class="text-sm leading-6 list-disc pl-5">
-                <li data-i18n="m1">Electricidad y fontanería básica (reemplazos y ajustes menores).</li>
-                <li data-i18n="m2">Pintura interior/exterior y de techos.</li>
-                <li data-i18n="m3">Instalaciones menores (TV, repisas, cortinas).</li>
-                <li data-i18n="m4">Diagnóstico preventivo con reporte y fotos.</li>
-                <li data-i18n="m5">Urgencias 24 h (según disponibilidad).</li>
+                <li data-i18n="m1"></li>
+                <li data-i18n="m2"></li>
+                <li data-i18n="m3"></li>
+                <li data-i18n="m4"></li>
+                <li data-i18n="m5"></li>
             </ul>
-            <div class="mt-4 text-sm text-slate-600" data-i18n="m_tariffs">
-                Tarifa ref.: ₡10.700–₡16.050/h, mínimo 0.5 h. Materiales con +10% de manejo. Traslado fuera de Poás/Alajuela Centro se cotiza aparte.
-            </div>
+            <div class="mt-4 text-sm text-slate-600" data-i18n="m_tariffs"></div>
         </div>
     </div>
 </section>
 
 <!-- Planes -->
 <section id="planes" class="max-w-7xl mx-auto px-4 py-12">
-    <h2 class="text-2xl font-bold mb-6" data-i18n="plans_title">Planes</h2>
+    <h2 class="text-2xl font-bold mb-6" data-i18n="plans_title"></h2>
     <div class="grid md:grid-cols-3 gap-6">
         <div class="card p-6">
-            <h3 class="text-lg font-bold" data-i18n="plan_express">Plan Express</h3>
-            <p class="text-sm text-slate-600 mt-2" data-i18n="plan_express_desc">1 visita única: turnover + mantenimiento ligero. Ideal entre reservas.</p>
-            <div class="mt-4 text-sm" data-i18n="plan_from">Desde</div>
+            <h3 class="text-lg font-bold" data-i18n="plan_express"></h3>
+            <p class="text-sm text-slate-600 mt-2" data-i18n="plan_express_desc"></p>
+            <div class="mt-4 text-sm" data-i18n="plan_from"></div>
             <div class="text-xl font-bold">US$55–85</div>
         </div>
         <div class="card p-6">
-            <h3 class="text-lg font-bold" data-i18n="plan_full">Plan Completo</h3>
-            <p class="text-sm text-slate-600 mt-2" data-i18n="plan_full_desc">2 visitas/mes: jardinería + limpieza + checklist técnico con fotos.</p>
-            <div class="mt-4 text-sm" data-i18n="plan_from">Desde</div>
+            <h3 class="text-lg font-bold" data-i18n="plan_full"></h3>
+            <p class="text-sm text-slate-600 mt-2" data-i18n="plan_full_desc"></p>
+            <div class="mt-4 text-sm" data-i18n="plan_from"></div>
             <div class="text-xl font-bold">US$180–260/mes</div>
         </div>
         <div class="card p-6">
-            <h3 class="text-lg font-bold" data-i18n="plan_urgent">Plan Urgencias</h3>
-            <p class="text-sm text-slate-600 mt-2" data-i18n="plan_urgent_desc">Atención en 24 horas (según disponibilidad). Ideal para imprevistos.</p>
-            <div class="mt-4 text-sm" data-i18n="plan_from">Desde</div>
+            <h3 class="text-lg font-bold" data-i18n="plan_urgent"></h3>
+            <p class="text-sm text-slate-600 mt-2" data-i18n="plan_urgent_desc"></p>
+            <div class="mt-4 text-sm" data-i18n="plan_from"></div>
             <div class="text-xl font-bold">US$45 + materiales</div>
         </div>
     </div>
@@ -170,18 +153,30 @@
 
 <!-- Proceso -->
 <section id="proceso" class="max-w-7xl mx-auto px-4 py-12">
-    <h2 class="text-2xl font-bold mb-6" data-i18n="process_title">Cómo trabajamos</h2>
+    <h2 class="text-2xl font-bold mb-6" data-i18n="process_title"></h2>
     <div class="grid md:grid-cols-4 gap-6">
-        <div class="card p-5"><h4 class="font-semibold" data-i18n="p1_t">1) Solicitud</h4><p class="text-sm text-slate-600" data-i18n="p1_d">Cuéntanos el tipo de servicio, m²/horas y fecha tentativa.</p></div>
-        <div class="card p-5"><h4 class="font-semibold" data-i18n="p2_t">2) Diagnóstico</h4><p class="text-sm text-slate-600" data-i18n="p2_d">Validamos alcance, ajustamos materiales y tiempos.</p></div>
-        <div class="card p-5"><h4 class="font-semibold" data-i18n="p3_t">3) Ejecución</h4><p class="text-sm text-slate-600" data-i18n="p3_d">Equipo asignado con checklist y estándares de calidad.</p></div>
-        <div class="card p-5"><h4 class="font-semibold" data-i18n="p4_t">4) Entrega</h4><p class="text-sm text-slate-600" data-i18n="p4_d">Reporte con fotos y recomendaciones preventivas.</p></div>
+        <div class="card p-5">
+            <h4 class="font-semibold" data-i18n="p1_t"></h4>
+            <p class="text-sm text-slate-600" data-i18n="p1_d"></p>
+        </div>
+        <div class="card p-5">
+            <h4 class="font-semibold" data-i18n="p2_t"></h4>
+            <p class="text-sm text-slate-600" data-i18n="p2_d"></p>
+        </div>
+        <div class="card p-5">
+            <h4 class="font-semibold" data-i18n="p3_t"></h4>
+            <p class="text-sm text-slate-600" data-i18n="p3_d"></p>
+        </div>
+        <div class="card p-5">
+            <h4 class="font-semibold" data-i18n="p4_t"></h4>
+            <p class="text-sm text-slate-600" data-i18n="p4_d"></p>
+        </div>
     </div>
 </section>
 
 <!-- Galería -->
 <section id="galeria" class="max-w-7xl mx-auto px-4 py-12">
-    <h2 class="text-2xl font-bold mb-6" data-i18n="gallery_title">Galería</h2>
+    <h2 class="text-2xl font-bold mb-6" data-i18n="gallery_title"></h2>
     <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
         <img src="/assets/g1.jpg" class="w-full h-56 object-cover rounded-xl" alt="Jardinería"/>
         <img src="/assets/g2.jpg" class="w-full h-56 object-cover rounded-xl" alt="Limpieza"/>
@@ -194,67 +189,67 @@
 
 <!-- Testimonios -->
 <section id="testimonios" class="max-w-7xl mx-auto px-4 py-12">
-    <h2 class="text-2xl font-bold mb-6" data-i18n="testimonials_title">Testimonios</h2>
+    <h2 class="text-2xl font-bold mb-6" data-i18n="testimonials_title"></h2>
     <div class="grid md:grid-cols-3 gap-6">
         <div class="card p-6">
             <div class="flex items-center gap-3">
                 <img src="/assets/av1.jpg" class="h-10 w-10 rounded-full object-cover" alt="Cliente 1">
                 <div>
                     <div class="font-semibold">María R.</div>
-                    <div class="text-xs text-slate-500" data-i18n="t1_role">Host Airbnb · Poás</div>
+                    <div class="text-xs text-slate-500" data-i18n="t1_role"></div>
                 </div>
             </div>
-            <p class="mt-3 text-sm" data-i18n="t1_txt">“Excelente turnover, llegaron a tiempo y dejaron todo impecable. ¡Recomendados!”</p>
+            <p class="mt-3 text-sm" data-i18n="t1_txt"></p>
         </div>
         <div class="card p-6">
             <div class="flex items-center gap-3">
                 <img src="/assets/av2.jpg" class="h-10 w-10 rounded-full object-cover" alt="Cliente 2">
                 <div>
                     <div class="font-semibold">Carlos T.</div>
-                    <div class="text-xs text-slate-500" data-i18n="t2_role">Administrador · Condominio</div>
+                    <div class="text-xs text-slate-500" data-i18n="t2_role"></div>
                 </div>
             </div>
-            <p class="mt-3 text-sm" data-i18n="t2_txt">“Buenas prácticas de seguridad y comunicación clara. Reporte con fotos muy útil.”</p>
+            <p class="mt-3 text-sm" data-i18n="t2_txt"></p>
         </div>
         <div class="card p-6">
             <div class="flex items-center gap-3">
                 <img src="/assets/av3.jpg" class="h-10 w-10 rounded-full object-cover" alt="Cliente 3">
                 <div>
                     <div class="font-semibold">Hotel Azul</div>
-                    <div class="text-xs text-slate-500" data-i18n="t3_role">Hotel · Alajuela</div>
+                    <div class="text-xs text-slate-500" data-i18n="t3_role"></div>
                 </div>
             </div>
-            <p class="mt-3 text-sm" data-i18n="t3_txt">“Soporte de urgencias 24 h cuando lo necesitamos. Muy profesionales.”</p>
+            <p class="mt-3 text-sm" data-i18n="t3_txt"></p>
         </div>
     </div>
 </section>
 
 <!-- Cobertura -->
 <section class="max-w-7xl mx-auto px-4 py-12">
-    <h2 class="text-2xl font-bold mb-2" data-i18n="coverage_title">Cobertura</h2>
-    <p class="text-slate-600" data-i18n="coverage_txt">Poás y Alajuela Centro. Para otras locaciones, se cotiza el traslado.</p>
+    <h2 class="text-2xl font-bold mb-2" data-i18n="coverage_title"></h2>
+    <p class="text-slate-600" data-i18n="coverage_txt"></p>
     <img src="/assets/map.jpg" class="w-full h-64 object-cover rounded-xl mt-4" alt="Cobertura Poás y Alajuela Centro">
 </section>
 
 <!-- FAQ -->
 <section id="faq" class="max-w-7xl mx-auto px-4 py-12">
-    <h2 class="text-2xl font-bold mb-6" data-i18n="faq_title">Preguntas frecuentes</h2>
+    <h2 class="text-2xl font-bold mb-6" data-i18n="faq_title"></h2>
     <div class="grid md:grid-cols-2 gap-6 text-sm">
         <div class="card p-5">
-            <h4 class="font-semibold" data-i18n="faq1_q">¿Materiales incluidos?</h4>
-            <p class="text-slate-600" data-i18n="faq1_a">Incluimos básicos; materiales especiales y posobra se cotizan aparte (+10% manejo).</p>
+            <h4 class="font-semibold" data-i18n="faq1_q"></h4>
+            <p class="text-slate-600" data-i18n="faq1_a"></p>
         </div>
         <div class="card p-5">
-            <h4 class="font-semibold" data-i18n="faq2_q">¿Cómo se calcula el precio?</h4>
-            <p class="text-slate-600" data-i18n="faq2_a">Por m² con productividades (jardinería/limpieza) o por hora (mantenimiento). Cotiza para detalle.</p>
+            <h4 class="font-semibold" data-i18n="faq2_q"></h4>
+            <p class="text-slate-600" data-i18n="faq2_a"></p>
         </div>
         <div class="card p-5">
-            <h4 class="font-semibold" data-i18n="faq3_q">¿Reprogramaciones?</h4>
-            <p class="text-slate-600" data-i18n="faq3_a">Sin costo con 24 h de aviso; urgencias sujetas a disponibilidad.</p>
+            <h4 class="font-semibold" data-i18n="faq3_q"></h4>
+            <p class="text-slate-600" data-i18n="faq3_a"></p>
         </div>
         <div class="card p-5">
-            <h4 class="font-semibold" data-i18n="faq4_q">¿Garantía?</h4>
-            <p class="text-slate-600" data-i18n="faq4_a">Revisamos incidencias reportadas en 48 h y realizamos corrección si aplica.</p>
+            <h4 class="font-semibold" data-i18n="faq4_q"></h4>
+            <p class="text-slate-600" data-i18n="faq4_a"></p>
         </div>
     </div>
 </section>
@@ -266,17 +261,38 @@
         <p class="text-slate-600 text-sm mt-1" data-i18n="contact_sub">Cuéntanos sobre tu propiedad y te contactamos.</p>
 
         <form id="contactForm" class="grid md:grid-cols-2 gap-4 mt-4">
-            <input class="rounded-lg border px-3 py-2" id="name" placeholder="Nombre" aria-label="Nombre">
-            <input class="rounded-lg border px-3 py-2" id="email" type="email" placeholder="Email" aria-label="Email">
-            <input class="rounded-lg border px-3 py-2" id="phone" placeholder="WhatsApp" aria-label="WhatsApp">
-            <select class="rounded-lg border px-3 py-2" id="serviceType" aria-label="Servicio">
-                <option value="Jardinería">Jardinería</option>
-                <option value="Limpieza">Limpieza</option>
-                <option value="Mantenimiento">Mantenimiento</option>
-            </select>
-            <input class="rounded-lg border px-3 py-2" id="size" placeholder="m² u horas" aria-label="m2 u horas">
-            <input class="rounded-lg border px-3 py-2" id="date" type="date" aria-label="Fecha tentativa">
-            <textarea class="rounded-lg border px-3 py-2 md:col-span-2" id="message" rows="3" placeholder="Mensaje"></textarea>
+            <div class="form-control relative">
+                <input class="rounded-lg border px-3 py-2 w-full" id="name" placeholder="Nombre" aria-label="Nombre">
+            </div>
+
+            <div class="form-control relative">
+                <input class="rounded-lg border px-3 py-2 w-full" id="email" type="email" placeholder="Email" aria-label="Email">
+            </div>
+
+            <div class="form-control relative">
+                <input class="rounded-lg border px-3 py-2 w-full" id="phone" placeholder="WhatsApp" aria-label="WhatsApp">
+            </div>
+
+            <div class="form-control relative">
+                <select class="rounded-lg border px-3 py-2 w-full" id="serviceType" aria-label="Servicio">
+                    <option value="Jardinería">Jardinería</option>
+                    <option value="Limpieza">Limpieza</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                </select>
+            </div>
+
+            <div class="form-control relative">
+                <input class="rounded-lg border px-3 py-2 w-full" id="size" placeholder="m²" aria-label="m2 u horas">
+            </div>
+
+            <div class="form-control relative">
+                <input class="rounded-lg border px-3 py-2 w-full" id="date" type="date" aria-label="Fecha tentativa">
+            </div>
+
+            <div class="form-control relative md:col-span-2">
+                <textarea class="rounded-lg border px-3 py-2 w-full" id="message" rows="3" placeholder="Mensaje"></textarea>
+            </div>
+
             <div class="md:col-span-2 flex flex-wrap gap-3">
                 <button type="button" id="sendEmail" class="btn text-white" style="background:#1E88C7" data-i18n="contact_email">Enviar por email</button>
                 <button type="button" id="sendWA" class="btn text-white" style="background:#74A643" data-i18n="contact_wa">Enviar por WhatsApp</button>
@@ -290,17 +306,21 @@
     <div class="max-w-7xl mx-auto px-4 py-8 text-sm flex flex-col md:flex-row gap-2 md:items-center md:justify-between">
         <div class="flex items-center gap-2">
             <img src="/assets/logotodocrmini.png" class="h-6 w-auto" alt="TODOCR">
-            <span>© <span id="yr"></span> TODOCR · Poás, Alajuela</span>
+            <span data-i18n="footer_copyright">© <span id="yr"></span> TODOCR · Poás, Alajuela</span>
         </div>
         <div class="text-slate-500">info.todocr@gmail.com · +506 7080 8613</div>
     </div>
 </footer>
 
 <!-- Botón flotante WhatsApp -->
-<a href="https://wa.me/50670808613?text=Hola%20TODOCR%2C%20quisiera%20una%20cotizaci%C3%B3n" target="_blank"
-   class="fixed bottom-4 right-4 rounded-full shadow-lg px-4 py-3 text-white" style="background:#74A643">
+<a href="https://wa.me/50670808613?text=Hola%20TODOCR%2C%20quisiera%20una%20cotizaci%C3%B3n"
+   target="_blank"
+   class="fixed bottom-4 right-4 rounded-full shadow-lg px-4 py-3 text-white"
+   style="background:#74A643">
     WhatsApp
 </a>
+
+<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
