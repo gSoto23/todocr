@@ -79,7 +79,10 @@ const i18n = {
         error_name: "Nombre requerido (mínimo 2 caracteres)",
         error_email: "Email válido requerido",
         error_phone: "Número de teléfono válido requerido",
-        error_date: "Fecha futura requerida"
+        error_date: "Fecha futura requerida",
+        sending: "Enviando...",
+        email_sent: "¡Email enviado con éxito!",
+        email_error: "Error al enviar el email. Por favor, intente de nuevo."
     },
     en: {
         nav_services: "Services", nav_plans: "Plans", nav_process: "Process", nav_gallery: "Gallery",
@@ -161,6 +164,9 @@ const i18n = {
         error_name: "Name required (minimum 2 characters)",
         error_email: "Valid email required",
         error_phone: "Valid phone number required",
-        error_date: "Future date required"
+        error_date: "Future date required",
+        sending: "Sending...",
+        email_sent: "Email sent successfully!",
+        email_error: "Error sending email. Please try again."
     }
 };

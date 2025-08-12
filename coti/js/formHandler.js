@@ -1,37 +1,69 @@
 class FormHandler {
     constructor() {
-        // Referencias a elementos del DOM
-        this.form = document.getElementById('calculator-form');
-        this.totalCotizacion = document.getElementById('totalCotizacion');
-        this.totalColones = document.getElementById('totalColones');
-        this.nombreCliente = document.getElementById('nombreCliente');
-        this.telefonoCliente = document.getElementById('telefonoCliente');
-        this.emailCliente = document.getElementById('emailCliente');
-        this.direccionTrabajo = document.getElementById('direccionTrabajo');
-        this.observaciones = document.getElementById('observaciones');
-        this.fechaTrabajo = document.getElementById('fechaTrabajo');
-        this.categoria = document.getElementById('categoria');
-        this.servicio = document.getElementById('servicio');
-        this.area = document.getElementById('area');
-        this.horas = document.getElementById('horas');
-        this.matBody = document.getElementById('matBody');
-        this.montoRecargo = document.getElementById('montoRecargo');
-        this.loadingOverlay = document.getElementById('loading-overlay');
-
-        // Valores de la cotización
-        this.totalUSD = 0;
-        this.totalCRC = 0;
-
+        this.initializeConfig();
+        this.initializeElements();
+        this.initializeState();
         this.init();
     }
 
-    init() {
-        // Event listeners para los botones
-        document.getElementById('enviarEmail')?.addEventListener('click', () => this.enviarEmail());
-        document.getElementById('enviarWhatsApp')?.addEventListener('click', () => this.enviarWhatsApp());
-        document.getElementById('descargarPDF')?.addEventListener('click', () => this.descargarPDF());
+    initializeConfig() {
+        this.API_CONFIG = {
+            BASE_URL: 'http://localhost:3000',
+            ENDPOINTS: {
+                CONTACT: '/api/email/contact'
+            },
+            WHATSAPP: {
+                PHONE: '50670808613'
+            }
+        };
+    }
 
-        // Listener para actualización de totales
+    initializeElements() {
+        const elements = {
+            'form': 'calculator-form',
+            'totalCotizacion': 'totalCotizacion',
+            'totalColones': 'totalColones',
+            'nombreCliente': 'nombreCliente',
+            'telefonoCliente': 'telefonoCliente',
+            'emailCliente': 'emailCliente',
+            'direccionTrabajo': 'direccionTrabajo',
+            'observaciones': 'observaciones',
+            'fechaTrabajo': 'fechaTrabajo',
+            'categoria': 'categoria',
+            'servicio': 'servicio',
+            'area': 'area',
+            'horas': 'horas',
+            'matBody': 'matBody',
+            'montoRecargo': 'montoRecargo',
+            'loadingOverlay': 'loading-overlay',
+            'preview': 'preview'
+        };
+
+        for (const [key, id] of Object.entries(elements)) {
+            this[key] = document.getElementById(id);
+        }
+    }
+
+    initializeState() {
+        this.totalUSD = 0;
+        this.totalCRC = 0;
+    }
+
+    init() {
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        const buttons = {
+            'enviarEmail': () => this.enviarEmail(),
+            'enviarWhatsApp': () => this.enviarWhatsApp(),
+            'descargarPDF': () => this.descargarPDF()
+        };
+
+        for (const [id, handler] of Object.entries(buttons)) {
+            document.getElementById(id)?.addEventListener('click', handler);
+        }
+
         document.addEventListener('calculoActualizado', (event) => {
             this.totalUSD = event.detail.totalUSD;
             this.totalCRC = event.detail.total;
@@ -72,8 +104,12 @@ class FormHandler {
             }
         ];
 
+        return this.realizarValidaciones(camposRequeridos);
+    }
+
+    realizarValidaciones(campos) {
         // Limpiar validaciones anteriores
-        camposRequeridos.forEach(({ campo }) => {
+        campos.forEach(({campo}) => {
             campo.classList.remove('invalid');
             const feedback = campo.parentElement.querySelector('.invalid-feedback');
             if (feedback) {
@@ -84,58 +120,43 @@ class FormHandler {
 
         // Realizar validaciones
         let esValido = true;
-        for (const { campo, mensaje, validacion } of camposRequeridos) {
+        for (const {campo, mensaje, validacion} of campos) {
             const valor = campo.value;
-
             if (!valor || !validacion(valor)) {
                 esValido = false;
-
-                // Aplicar estilo de error al campo
                 campo.classList.add('invalid');
-
-                // Mostrar mensaje de error
                 const feedback = campo.parentElement.querySelector('.invalid-feedback');
                 if (feedback) {
                     feedback.textContent = mensaje;
                     feedback.classList.remove('hidden');
                 }
-
-                // Si es el primer error, hacer focus en ese campo
                 if (esValido === false) {
                     campo.focus();
                 }
             }
         }
-
         return esValido;
     }
 
-
-    mostrarLoading() {
-        this.loadingOverlay?.classList.remove('hidden');
-        this.loadingOverlay?.classList.add('flex');
-    }
-
-    ocultarLoading() {
-        this.loadingOverlay?.classList.add('hidden');
-        this.loadingOverlay?.classList.remove('flex');
+    mostrarLoading(mostrar = true) {
+        if (this.loadingOverlay) {
+            this.loadingOverlay.classList.toggle('hidden', !mostrar);
+            this.loadingOverlay.classList.toggle('flex', mostrar);
+        }
     }
 
     recopilarDatos() {
-        // Obtener información de materiales
-        const materiales = [];
-        const filasMateriales = this.matBody?.getElementsByTagName('tr') || [];
-        for (const fila of filasMateriales) {
-            const celdas = fila.getElementsByTagName('td');
-            materiales.push({
-                nombre: celdas[0]?.textContent || '',
-                precio: celdas[1]?.textContent || '',
-                cantidad: celdas[2]?.textContent || '',
-                subtotal: celdas[3]?.textContent || ''
+        const materiales = Array.from(this.matBody?.getElementsByTagName('tr') || [])
+            .map(fila => {
+                const celdas = fila.getElementsByTagName('td');
+                return {
+                    nombre: celdas[0]?.textContent || '',
+                    precio: celdas[1]?.textContent || '',
+                    cantidad: celdas[2]?.textContent || '',
+                    subtotal: celdas[3]?.textContent || ''
+                };
             });
-        }
 
-        // Crear objeto con todos los datos
         return {
             cliente: {
                 nombre: this.nombreCliente?.value || '',
@@ -150,7 +171,7 @@ class FormHandler {
                 area: this.area?.value || '',
                 horas: this.horas?.value || ''
             },
-            materiales: materiales,
+            materiales,
             observaciones: this.observaciones?.value || '',
             recargo: this.montoRecargo?.value || '0',
             totales: {
@@ -164,21 +185,187 @@ class FormHandler {
         if (!this.validarCamposRequeridos()) return;
 
         try {
-            this.mostrarLoading();
+            this.mostrarLoading(true);
             const datos = this.recopilarDatos();
-            const imagenes = window.imageHandler.getImages();
+            const formData = this.prepararFormData(datos);
 
-            // Aquí iría la lógica de envío de email
-            console.log('Enviando email...', datos);
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulación
+            const response = await fetch(
+                `${this.API_CONFIG.BASE_URL}${this.API_CONFIG.ENDPOINTS.CONTACT}`,
+                {
+                    method: 'POST',
+                    body: formData
+                }
+            );
 
-            alert('Email enviado exitosamente');
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                this.mostrarNotificacion('success', 'Cotización enviada exitosamente por email');
+                this.limpiarFormulario();
+            } else {
+                throw new Error(data.message || 'Error al enviar la cotización');
+            }
         } catch (error) {
             console.error('Error al enviar email:', error);
-            alert('Error al enviar email');
+            this.mostrarNotificacion('error', `Error al enviar la cotización: ${error.message}`);
         } finally {
-            this.ocultarLoading();
+            this.mostrarLoading(false);
         }
+    }
+
+    prepararFormData(datos) {
+        const formData = new FormData();
+        const message = this.formatearMensajeEmail(datos);
+
+        // Datos para el email
+        formData.append('to', datos.cliente.email);  // Correo del cliente
+        formData.append('cc', 'info.todocr@gmail.com');  // Correo CC
+        formData.append('name', datos.cliente.nombre);
+        formData.append('phone', datos.cliente.telefono);
+        formData.append('service', `${datos.servicio.categoria} - ${datos.servicio.tipo}`);
+        formData.append('size', datos.servicio.area || datos.servicio.horas);
+        formData.append('date', datos.servicio.fecha);
+        formData.append('message', message);
+
+        // Procesar imágenes si existe el imageHandler
+        if (window.imageHandler && typeof window.imageHandler.getImages === 'function') {
+            this.adjuntarImagenes(formData);
+        }
+
+        return formData;
+    }
+
+
+    adjuntarImagenes(formData) {
+        const imagenes = window.imageHandler.getImages() || [];
+        imagenes.forEach((imagen, index) => {
+            try {
+                if (!imagen || !imagen.src) {
+                    console.warn(`Imagen inválida en índice ${index}`);
+                    return;
+                }
+
+                const blob = this.base64ToBlob(imagen.src);
+                if (blob) {
+                    formData.append('attachments', blob, `imagen${index + 1}.jpg`);
+                }
+            } catch (error) {
+                console.error('Error procesando imagen:', error);
+            }
+        });
+    }
+
+    base64ToBlob(base64String) {
+        if (!base64String || typeof base64String !== 'string') {
+            console.warn('String base64 inválido');
+            return null;
+        }
+
+        try {
+            if (base64String instanceof Blob) return base64String;
+            if (base64String.startsWith('blob:')) return null;
+
+            const matches = base64String.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+            if (!matches || matches.length !== 3) {
+                console.warn('Formato de string base64 inválido');
+                return null;
+            }
+
+            const contentType = matches[1];
+            const base64 = matches[2];
+            const byteCharacters = atob(base64);
+            const byteArrays = [];
+
+            for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+                const slice = byteCharacters.slice(offset, offset + 512);
+                const byteNumbers = new Array(slice.length);
+
+                for (let i = 0; i < slice.length; i++) {
+                    byteNumbers[i] = slice.charCodeAt(i);
+                }
+
+                byteArrays.push(new Uint8Array(byteNumbers));
+            }
+
+            return new Blob(byteArrays, { type: contentType });
+        } catch (error) {
+            console.error('Error convirtiendo base64 a blob:', error);
+            return null;
+        }
+    }
+
+    formatearMensajeEmail(datos) {
+        const partes = [
+            'Detalles de la Cotización:',
+            '',
+            `Cliente: ${datos.cliente.nombre}`,
+            `Teléfono: ${datos.cliente.telefono}`,
+            `Email: ${datos.cliente.email}`,
+            `Dirección: ${datos.cliente.direccion}`,
+            '',
+            `Servicio: ${datos.servicio.categoria} - ${datos.servicio.tipo}`,
+            `Fecha: ${new Date(datos.servicio.fecha).toLocaleDateString('es-CR')}`,
+            datos.servicio.area ? `Área: ${datos.servicio.area}m²` : '',
+            datos.servicio.horas ? `Horas: ${datos.servicio.horas}` : '',
+        ];
+
+        // Agregar materiales si existen
+        if (datos.materiales.length > 0) {
+            partes.push('', 'Materiales:');
+            datos.materiales.forEach(material => {
+                partes.push(`- ${material.nombre}: ${material.cantidad} x ₡${material.precio}`);
+            });
+        }
+
+        partes.push(
+            '',
+            `Total: ₡${Math.round(datos.totales.colones).toLocaleString()} ` +
+            `(US$${Math.round(datos.totales.dolares).toLocaleString()})`
+        );
+
+        if (datos.observaciones) {
+            partes.push('', 'Observaciones:', datos.observaciones);
+        }
+
+        return partes.filter(Boolean).join('\n');
+    }
+
+    mostrarNotificacion(tipo, mensaje) {
+        const notification = document.createElement('div');
+        notification.className = `fixed bottom-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+            tipo === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white`;
+        notification.textContent = mensaje;
+
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 5000);
+    }
+
+    limpiarFormulario() {
+        this.form?.reset();
+
+        // Limpiar imágenes si existe el imageHandler
+        if (window.imageHandler && typeof window.imageHandler.clearImages === 'function') {
+            window.imageHandler.clearImages();
+        }
+
+        // Limpiar la tabla de materiales
+        if (this.matBody) {
+            this.matBody.innerHTML = '';
+        }
+
+        // Limpiar el preview de imágenes
+        if (this.preview) {
+            this.preview.innerHTML = '';
+        }
+
+        // Restablecer totales
+        this.totalUSD = 0;
+        this.totalCRC = 0;
+        this.actualizarTotales();
     }
 
     enviarWhatsApp() {
@@ -187,52 +374,47 @@ class FormHandler {
         try {
             const datos = this.recopilarDatos();
             const mensaje = this.formatearMensajeWhatsApp(datos);
-            const url = `https://wa.me/50670808613?text=${encodeURIComponent(mensaje)}`;
+            const url = `https://wa.me/${this.API_CONFIG.WHATSAPP.PHONE}?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
         } catch (error) {
             console.error('Error al enviar WhatsApp:', error);
-            alert('Error al abrir WhatsApp');
+            this.mostrarNotificacion('error', 'Error al abrir WhatsApp');
         }
     }
 
     formatearMensajeWhatsApp(datos) {
         const fecha = new Date(datos.servicio.fecha).toLocaleDateString('es-CR');
-        let mensaje = `*TODOCR - Nueva Cotización*\n\n`;
-        mensaje += `*Cliente:* ${datos.cliente.nombre}\n`;
-        mensaje += `*Teléfono:* ${datos.cliente.telefono}\n`;
-        mensaje += `*Dirección:* ${datos.cliente.direccion}\n\n`;
-        mensaje += `*Servicio:* ${datos.servicio.categoria} - ${datos.servicio.tipo}\n`;
-        mensaje += `*Fecha:* ${fecha}\n`;
+        const partes = [
+            '*TODOCR - Nueva Cotización*',
+            '',
+            `*Cliente:* ${datos.cliente.nombre}`,
+            `*Teléfono:* ${datos.cliente.telefono}`,
+            `*Dirección:* ${datos.cliente.direccion}`,
+            '',
+            `*Servicio:* ${datos.servicio.categoria} - ${datos.servicio.tipo}`,
+            `*Fecha:* ${fecha}`,
+            datos.servicio.area ? `*Área:* ${datos.servicio.area}m²` : '',
+            datos.servicio.horas ? `*Horas:* ${datos.servicio.horas}` : '',
+            '',
+            `*Total:* ₡${Math.round(datos.totales.colones).toLocaleString()} ` +
+            `(US$${Math.round(datos.totales.dolares).toLocaleString()})`,
+            datos.observaciones ? `\n*Observaciones:*\n${datos.observaciones}` : ''
+        ];
 
-        if (datos.servicio.area) {
-            mensaje += `*Área:* ${datos.servicio.area}m²\n`;
-        }
-        if (datos.servicio.horas) {
-            mensaje += `*Horas:* ${datos.servicio.horas}\n`;
-        }
-
-        mensaje += `\n*Total:* ₡${Math.round(datos.totales.colones).toLocaleString()} (US$${Math.round(datos.totales.dolares).toLocaleString()})\n`;
-
-        if (datos.observaciones) {
-            mensaje += `\n*Observaciones:*\n${datos.observaciones}\n`;
-        }
-
-        return mensaje;
+        return partes.filter(Boolean).join('\n');
     }
 
     async descargarPDF() {
         if (!this.validarCamposRequeridos()) return;
 
         try {
-            this.mostrarLoading();
+            this.mostrarLoading(true);
             const datos = this.recopilarDatos();
 
-            // Aquí iría la lógica de generación de PDF
-            console.log('Generando PDF...', datos);
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulación
+            // Simulación de descarga PDF (reemplazar con implementación real)
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const blob = new Blob(['PDF simulado'], {type: 'application/pdf'});
 
-            // Simulación de descarga
-            const blob = new Blob(['PDF simulado'], { type: 'application/pdf' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -241,18 +423,15 @@ class FormHandler {
             a.click();
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
-
         } catch (error) {
             console.error('Error al generar PDF:', error);
-            alert('Error al generar PDF');
+            this.mostrarNotificacion('error', 'Error al generar PDF');
         } finally {
-            this.ocultarLoading();
+            this.mostrarLoading(false);
         }
     }
 }
 
-// Inicializar el manejador de formularios
+// Inicializar y exportar
 const formHandler = new FormHandler();
-
-// Exportar para uso en otros módulos si es necesario
 window.formHandler = formHandler;
