@@ -354,14 +354,20 @@ function displayResults(result) {
         elements.resMat.textContent = `₡${Math.round(result.materialsTotal).toLocaleString()}`;
     }
     if (elements.resPrecio) {
-        elements.resPrecio.textContent = `₡${Math.round(result.total).toLocaleString()}`;
+        const subtotal = result.total;
+        const iva = subtotal * 0.13;
+        const total = subtotal + iva;
+
+        elements.resPrecio.textContent = `₡${Math.round(total).toLocaleString()}`;
     }
 
     // Disparar evento para FormHandler
     document.dispatchEvent(new CustomEvent('calculoActualizado', {
         detail: {
-            total: result.total,
-            totalUSD: result.total / CONFIG.EXCHANGE_RATE
+            subtotal: result.total,  // Subtotal sin IVA
+            iva: result.total * 0.13, // Monto del IVA
+            total: result.total * 1.13, // Total con IVA
+            totalUSD: (result.total * 1.13) / CONFIG.EXCHANGE_RATE // Total en USD con IVA incluido
         }
     }));
 }

@@ -183,14 +183,6 @@
                 </div>
             </div>
 
-
-            <!-- Botón Calcular -->
-<!--            <div class="mt-4">-->
-<!--                <button type="submit" id="calcularBtn" class="btn text-white px-6" style="background:#1E88C7">-->
-<!--                    Calcular cotización-->
-<!--                </button>-->
-<!--            </div>-->
-
             <!-- Resultados -->
             <div class="mt-6 grid md:grid-cols-4 gap-4">
                 <div class="p-4 rounded-xl border bg-white">
@@ -265,7 +257,15 @@
 
                 <!-- Resumen y totales -->
                 <div class="card p-4 bg-slate-50 mt-4">
-                    <div class="flex items-center justify-between mt-1">
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold">Sub Total</span>
+                        <span id="subtotalColones" class="text-lg">—</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold">IVA (13%)</span>
+                        <span id="ivaColones" class="text-lg">—</span>
+                    </div>
+                    <div class="flex items-center justify-between mt-2 pt-2 border-t">
                         <span class="font-semibold">Total CRC</span>
                         <span id="totalColones" class="text-xl font-bold">—</span>
                     </div>
@@ -273,6 +273,7 @@
                         <span class="font-semibold text-sm">Total USD</span>
                         <span id="totalCotizacion" class="text-sm">—</span>
                     </div>
+
                 </div>
 
                 <!-- Botones de envío -->

@@ -1,3 +1,11 @@
+// API Configuration
+const API_CONFIG = {
+    BASE_URL: 'http://localhost:3000',
+    ENDPOINTS: {
+        CONTACT: '/api/email/contact-home'
+    }
+};
+
 // Schema.org data
 const schemaData = {
     "@context": "https://schema.org",
@@ -111,16 +119,16 @@ function handleLanguageToggle() {
     populateTexts();
 }
 
-// Función de validación del formulario
+// Form validation
 function validateForm() {
     let isValid = true;
     const errors = {};
 
-    // Limpiar errores previos
+    // Clear previous errors
     document.querySelectorAll('.error-message').forEach(el => el.remove());
     document.querySelectorAll('.error-input').forEach(el => el.classList.remove('error-input'));
 
-    // Validaciones
+    // Validations
     const fields = {
         name: {
             required: true,
@@ -152,12 +160,11 @@ function validateForm() {
         }
     };
 
-    // Validar cada campo
+    // Validate each field
     Object.entries(fields).forEach(([fieldName, rules]) => {
         const field = F(fieldName);
         let hasError = false;
 
-        // Solo validar si el campo es requerido o tiene valor
         if (rules.required) {
             if (!rules.value || rules.value.length === 0) {
                 hasError = true;
@@ -174,24 +181,99 @@ function validateForm() {
             isValid = false;
             field.classList.add('error-input');
 
-            // Crear contenedor para el mensaje de error
             const errorContainer = document.createElement('div');
             errorContainer.className = 'error-message text-red-500 text-xs mt-1';
             errorContainer.textContent = i18n[currentLang][`error_${fieldName}`];
 
-            // Insertar mensaje de error después del campo
             const parent = field.parentElement;
             if (parent.classList.contains('md:col-span-2')) {
-                // Para campos que ocupan todo el ancho
                 parent.appendChild(errorContainer);
             } else {
-                // Para campos en columnas
                 field.insertAdjacentElement('afterend', errorContainer);
             }
         }
     });
 
     return isValid;
+}
+
+// Show notification
+function showNotification(type, message) {
+    const notification = document.createElement('div');
+    notification.className = `fixed bottom-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+        type === 'success' ? 'bg-green-500' : 'bg-red-500'
+    } text-white`;
+    notification.textContent = message;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+// Handle email submit
+async function handleEmailSubmit(event) {
+    event.preventDefault();
+
+    if (!validateForm()) {
+        return;
+    }
+
+    const sendEmailBtn = F('sendEmail');
+    const originalText = sendEmailBtn.textContent;
+
+    try {
+        sendEmailBtn.disabled = true;
+        sendEmailBtn.innerHTML = `
+            <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            ${i18n[currentLang].sending}
+        `;
+
+        // Recopilar datos del formulario
+        const formData = {
+            name: F('name').value.trim(),
+            email: F('email').value.trim(),
+            phone: F('phone').value.trim(),
+            service: F('serviceType').value,
+            size: F('size').value.trim(),
+            date: F('date').value,
+            message: F('message').value.trim()
+        };
+
+        console.log('Sending data:', formData);
+
+        const response = await fetch(`${API_CONFIG.BASE_URL}/api/email/contact-home`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            showNotification('success', i18n[currentLang].email_sent);
+            F('contactForm').reset();
+        } else {
+            throw new Error(data.message || 'Error sending email');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('error', i18n[currentLang].email_error);
+    } finally {
+        sendEmailBtn.disabled = false;
+        sendEmailBtn.textContent = originalText;
+    }
 }
 
 // Initialize everything when DOM is ready
@@ -230,12 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Contact form handlers
     const sendEmail = F('sendEmail');
     if (sendEmail) {
-        sendEmail.addEventListener('click', () => {
-            if (validateForm()) {
-                const { subject, body } = buildSummary();
-                window.location.href = `mailto:info.todocr@gmail.com?subject=${subject}&body=${body}`;
-            }
-        });
+        sendEmail.addEventListener('click', handleEmailSubmit);
     }
 
     const sendWA = F('sendWA');
@@ -248,6 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Form input handlers
     const formInputs = document.querySelectorAll('#contactForm input, #contactForm textarea, #contactForm select');
     formInputs.forEach(input => {
         input.addEventListener('input', function () {
