@@ -233,7 +233,7 @@ async function enviarReporte() {
 
         await Promise.all(imagePromises);
 
-        const response = await fetch('http://localhost:3000/api/email/cleaning-report', {
+        const response = await fetch('https://todocr.com/api/email/cleaning-report', {
             method: 'POST',
             body: formData
         });

@@ -8,7 +8,7 @@ class FormHandler {
 
     initializeConfig() {
         this.API_CONFIG = {
-            BASE_URL: 'http://localhost:3000',
+            BASE_URL: 'https://todocr.com',
             ENDPOINTS: {
                 QUOTE: '/api/email/quote',
                 CONTACT: '/api/email/contact'
