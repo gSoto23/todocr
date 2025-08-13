@@ -167,9 +167,9 @@ class FormHandler {
 
     recopilarDatos() {
         // Calcular totales
-        const subtotal = this.totalCRC;
-        const iva = subtotal * 0.13;
-        const total = subtotal + iva;
+        const subtotal = this.subtotal;
+        const iva = this.iva;
+        const total = this.totalCRC;
 
         // Calcular total de materiales
         const materiales = Array.from(this.matBody?.getElementsByTagName('tr') || [])
@@ -403,7 +403,18 @@ class FormHandler {
         try {
             const datos = this.recopilarDatos();
             const mensaje = this.formatearMensajeWhatsApp(datos);
-            const url = `https://wa.me/${this.API_CONFIG.WHATSAPP.PHONE}?text=${encodeURIComponent(mensaje)}`;
+
+            // Obtener y formatear el número del cliente
+            let numeroCliente = datos.cliente.telefono
+                .replace(/\D/g, '')
+                .replace(/^0+/, '');
+
+            // Asegurarse que el número tenga el formato correcto
+            if (!numeroCliente.startsWith('506')) {
+                numeroCliente = '506' + numeroCliente;
+            }
+
+            const url = `https://wa.me/${numeroCliente}?text=${encodeURIComponent(mensaje)}`;
             window.open(url, '_blank');
         } catch (error) {
             console.error('Error al enviar WhatsApp:', error);
@@ -413,21 +424,50 @@ class FormHandler {
 
     formatearMensajeWhatsApp(datos) {
         const fecha = new Date(datos.servicio.fecha).toLocaleDateString('es-CR');
+        const formatNumber = (num) => Math.round(num).toLocaleString();
+
+        // Formatear lista de materiales si existen
+        let materialesText = '';
+        if (datos.materiales && datos.materiales.length > 0) {
+            materialesText = [
+                '*Materiales:*',
+                ...datos.materiales.map(mat =>
+                    `• ${mat.nombre}: ${mat.cantidad} x ₡${formatNumber(mat.precio)} = ₡${formatNumber(mat.subtotal)}`
+                )
+            ].join('\n');
+        }
+
         const partes = [
             '*TODOCR - Nueva Cotización*',
             '',
-            `*Cliente:* ${datos.cliente.nombre}`,
+            '*Información del Cliente*',
+            `*Nombre:* ${datos.cliente.nombre}`,
             `*Teléfono:* ${datos.cliente.telefono}`,
+            `*Email:* ${datos.cliente.email}`,
             `*Dirección:* ${datos.cliente.direccion}`,
             '',
-            `*Servicio:* ${datos.servicio.categoria} - ${datos.servicio.tipo}`,
+            '*Detalles del Servicio*',
+            `*Categoría:* ${datos.servicio.categoria}`,
+            `*Tipo:* ${datos.servicio.tipo}`,
             `*Fecha:* ${fecha}`,
             datos.servicio.area ? `*Área:* ${datos.servicio.area}m²` : '',
-            datos.servicio.horas ? `*Horas:* ${datos.servicio.horas}` : '',
+            datos.servicio.horasEstimadas ? `*Horas estimadas:* ${datos.servicio.horasEstimadas}` : '',
             '',
-            `*Total:* ₡${Math.round(datos.totales.colones).toLocaleString()} ` +
-            `(US$${Math.round(datos.totales.dolares).toLocaleString()})`,
-            datos.observaciones ? `\n*Observaciones:*\n${datos.observaciones}` : ''
+            '*Desglose de Costos*',
+            `*Mano de obra:* ₡${formatNumber(datos.costos.manoDeObra)}`,
+            datos.costos.totalMateriales > 0 ? `*Materiales:* ₡${formatNumber(datos.costos.totalMateriales)}` : '',
+            datos.costos.desplazamiento ? `*Recargo desplazamiento:* ₡${formatNumber(datos.costos.desplazamiento)}` : '',
+            '',
+            materialesText,
+            '',
+            '*Resumen Final*',
+            `*Subtotal:* ₡${formatNumber(datos.totales.subtotal)}`,
+            `*IVA (13%):* ₡${formatNumber(datos.totales.iva)}`,
+            `*Total CRC:* ₡${formatNumber(datos.totales.total)}`,
+            `*Total USD:* $${formatNumber(datos.totales.dolares)}`,
+            '',
+            datos.observaciones ? '*Observaciones:*' : '',
+            datos.observaciones || ''
         ];
 
         return partes.filter(Boolean).join('\n');
