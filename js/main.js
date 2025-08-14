@@ -57,21 +57,19 @@ function buildSummary() {
     const date = F('date')?.value || '-';
     const msg = F('message')?.value || '-';
 
-    const subject = encodeURIComponent(`${i18n[currentLang].quote_subject} · ${svc}`);
-    const body = `${i18n[currentLang].client}: ${name}
+    const body =
+        `Nombre: ${name}
 Email: ${email}
 WhatsApp: ${phone}
-${i18n[currentLang].service}: ${svc}
+Servicio: ${svc}
 m²/horas: ${size}
-${i18n[currentLang].tentative_date}: ${date}
+Fecha tentativa: ${date}
+${msg ? `\nMensaje:\n${msg}` : ''}
 
-${i18n[currentLang].message}:
-${msg}
-
-— ${i18n[currentLang].sent_from} www.todocr.com`;
+— www.todocr.com`;
 
     return {
-        subject,
+        subject: encodeURIComponent(`Solicitud de cotización · ${svc}`),
         body: encodeURIComponent(body),
         wa: encodeURIComponent(body)
     };
