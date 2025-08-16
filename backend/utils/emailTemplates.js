@@ -1,367 +1,326 @@
-// Template base con estilos y estructura común
-const baseTemplate = (content) => `
+// =====================
+//  Base Template (Email)
+// =====================
+
+// Función para obtener el nombre de la categoría a partir de su ID
+function getCategoryName(categoryId) {
+    const categories = {
+        'jardin': 'Jardinería',
+        'limpieza': 'Limpieza',
+        'mantenimiento': 'Mantenimiento'
+    };
+    return categories[categoryId] || categoryId;
+}
+
+// Función para obtener el nombre del servicio a partir de su ID y categoría
+function getServiceName(categoryId, serviceId) {
+    const services = {
+        'jardin': {
+            'corte': 'Corte de césped y bordes',
+            'poda': 'Poda de arbustos y árboles',
+            'riego': 'Riego y abonado',
+            'limpieza': 'Limpieza de zonas verdes',
+            'diseno': 'Diseño y reposición de plantas'
+        },
+        'limpieza': {
+            'turnover': 'Turnover Airbnb (check-in/check-out)',
+            'profunda': 'Limpieza profunda',
+            'vidrios': 'Limpieza de vidrios interior/exterior',
+            'post': 'Post-remodelación',
+            'sanitizacion': 'Sanitización focal'
+        },
+        'mantenimiento': {
+            'electrico': 'Electricidad y fontanería básica',
+            'pintura': 'Pintura interior/exterior o techos',
+            'instalaciones': 'Instalaciones menores',
+            'diagnostico': 'Diagnóstico preventivo',
+            'urgencias': 'Urgencias 24 horas'
+        }
+    };
+
+    return services[categoryId] && services[categoryId][serviceId]
+        ? services[categoryId][serviceId]
+        : serviceId;
+}
+const baseTemplate = (content, { preheader = "TODOCR — Jardinería, Limpieza y Mantenimiento" } = {}) => `
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TODOCR</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333333;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #ffffff;
-        }
-        .header {
-            background: #dee2e6;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px 8px 0 0;
-        }
-        .logo {
-            max-width: 200px;
-            height: auto;
-        }
-        .content {
-            padding: 30px;
-            background: #ffffff;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background: #ffffff;
-        }
-        .data-table th, .data-table td {
-            padding: 12px;
-            border-bottom: 1px solid #dee2e6;
-            text-align: left;
-        }
-        .data-table th {
-            background: #f8f9fa;
-            font-weight: bold;
-            color: #495057;
-        }
-        .message-box {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 15px 0;
-            border-left: 4px solid #F4A300;
-        }
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #666666;
-            font-size: 14px;
-        }
-        .total-section {
-            background: #1E88C7;
-            color: #ffffff;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 20px;
-            text-align: center;
-            font-size: 1.2em;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TODOCR</title>
+<meta name="color-scheme" content="light only">
+<style>
+  /* Paleta de marca */
+  :root {
+    --tp-green: #6B9236;
+    --tp-blue:  #1E88C7;
+    --tp-yellow:#E8A62B;
+    --tp-black: #1A1A1A;
+    --tp-light: #f6f8fa;
+    --tp-muted: #6b7280;
+    --tp-border:#e5e7eb;
+  }
+
+  /* Reset básico compatible con email */
+  body,table,td { margin:0; padding:0; }
+  img { border:0; line-height:100%; outline:none; text-decoration:none; }
+  table { border-collapse:collapse !important; }
+  body { width:100% !important; height:100% !important; background:#f2f4f7; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; font-family: Arial, Helvetica, sans-serif; color:#1f2937; }
+
+  /* Contenedor */
+  .wrapper { width:100%; background:#f2f4f7; padding:24px 0; }
+  .container { width:100%; max-width:600px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 6px 24px rgba(0,0,0,.06); }
+
+  /* Brand bar */
+  .brandbar { background: var(--tp-green); height:6px; }
+
+  /* Header */
+  .header { background:#eef2f7; padding:20px; text-align:center; }
+  .logo { max-width:220px; height:auto; display:block; margin:0 auto; }
+  .title { font-size:20px; font-weight:700; color:#111827; margin:14px 0 0 0; }
+  .subtitle { font-size:13px; color:#6b7280; margin:4px 0 0 0; }
+
+  /* Content card */
+  .content { padding:24px; }
+
+  /* Badges / chips */
+  .badge { display:inline-block; font-size:20px; font-weight:700; color:#374151; background:var(--tp-blue); padding:6px 10px; border-radius:999px; letter-spacing:.2px; text-align:center; }
+
+  /* Tablas key/value */
+  .kv { width:100%; border:1px solid var(--tp-border); border-radius:10px; overflow:hidden; }
+  .kv tr td { padding:12px 14px; font-size:14px; vertical-align:top; }
+  .kv tr:nth-child(odd) td { background:#fafafa; }
+  .kv td.k { width:36%; color:#374151; font-weight:700; background:#f8fafc; }
+  .kv td.v a { color:var(--tp-blue); text-decoration:none; }
+
+  /* Subtítulos de bloque */
+  .block-title { margin:18px 0 8px; font-size:14px; font-weight:800; color:#374151; text-transform:uppercase; letter-spacing:.6px; }
+
+  /* Message box */
+  .note { background:#f8fafc; border-left:4px solid var(--tp-yellow); padding:14px; border-radius:8px; font-size:14px; color:#374151; }
+
+  /* Totales y tablas detalladas */
+  .totals { width:100%; border:1px solid var(--tp-border); border-radius:10px; overflow:hidden; margin-top:8px; }
+  .totals td { padding:12px 14px; font-size:14px; }
+  .totals .row { background:#ffffff; }
+  .totals .row:nth-child(odd) { background:#fafafa; }
+  .totals .grand { background:#eef2f7; color:#374151; font-weight:800; font-size:24px; }
+  .totals .header { background:#f8fafc; color:#374151; font-weight:700; text-align:left; }
+
+  /* Footer */
+  .footer { text-align:center; color:#6b7280; font-size:12px; padding:18px; line-height:1.5; }
+  .footer a { color: var(--tp-green); text-decoration:none; }
+
+  /* Preheader (oculto) */
+  .preheader { display:none; visibility:hidden; opacity:0; color:transparent; height:0; width:0; overflow:hidden; mso-hide:all; }
+  @media (max-width:640px){
+    .content{ padding:18px; }
+    .title{ font-size:18px; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="https://www.todocr.com/assets/logotodocr.png" alt="TODOCR" class="logo">
-        </div>
-        ${content}
-        <div class="footer">
-            <p>TODOCR · Jardinería, Limpieza y Mantenimiento</p>
-            <p>Poás, Alajuela, Costa Rica</p>
-            <p>WhatsApp: <a href="https://wa.me/50670808613" target="_blank" style="color: #74A643; text-decoration: none;">+506 7080 8613</a></p>
-            <p>Email: info.todocr@gmail.com</p>
-        </div>
-    </div>
+  <div class="preheader">${preheader}</div>
+  <div class="wrapper">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr><td align="center">
+        <table role="presentation" class="container" cellpadding="0" cellspacing="0">
+          <tr><td class="brandbar"></td></tr>
+          <tr><td class="header">
+            <img class="logo" src="https://www.todocr.com/assets/logotodocr.png" alt="TODOCR">
+            <div class="subtitle">Jardinería · Limpieza · Mantenimiento</div>
+          </td></tr>
+          <tr><td class="content">
+            ${content}
+          </td></tr>
+          <tr><td class="footer">
+            TODOCR · Poás, Alajuela, Costa Rica<br/>
+            WhatsApp: <a href="https://wa.me/50670808613" target="_blank">+506 7080 8613</a> · Email: <a href="mailto:info.todocr@gmail.com">info.todocr@gmail.com</a><br/>
+            © ${new Date().getFullYear()} TODOCR
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </div>
 </body>
 </html>
 `;
 
-// Template para el formulario de contacto simple
+// ===============================
+//  Contact Email (Nuevo Contacto)
+// ===============================
 exports.contactTemplate = (data) => {
     const content = `
-        <div class="content">
-            <h2 style="color: #74A643; margin-bottom: 20px;">Nuevo Contacto</h2>
-            <table class="data-table">
-                <tr>
-                    <td><strong>Nombre:</strong></td>
-                    <td>${data.name}</td>
-                </tr>
-                <tr>
-                    <td><strong>Email:</strong></td>
-                    <td>${data.email}</td>
-                </tr>
-                <tr>
-                    <td><strong>Teléfono:</strong></td>
-                    <td>${data.phone}</td>
-                </tr>
-                <tr>
-                    <td><strong>Servicio:</strong></td>
-                    <td>${data.service}</td>
-                </tr>
-                <tr>
-                    <td><strong>Tamaño:</strong></td>
-                    <td>${data.size}</td>
-                </tr>
-                <tr>
-                    <td><strong>Fecha:</strong></td>
-                    <td>${data.date}</td>
-                </tr>
-            </table>
-            ${data.message ? `
-                <div class="message-box">
-                    <strong>Mensaje:</strong><br>
-                    ${data.message}
-                </div>
-            ` : ''}
-        </div>
-    `;
+    <div class="badge">Nuevo Contacto</div>
+
+    <table class="kv" role="presentation" cellpadding="0" cellspacing="0">
+      <tr><td class="k">Nombre:</td><td class="v">${data.name || "-"}</td></tr>
+      <tr><td class="k">Email:</td><td class="v"><a href="mailto:${data.email}">${data.email || "-"}</a></td></tr>
+      <tr><td class="k">Teléfono:</td><td class="v">${data.phone || "-"}</td></tr>
+      <tr><td class="k">Servicio:</td><td class="v">${data.service || "-"}</td></tr>
+      <tr><td class="k">Tamaño:</td><td class="v">${data.size || "-"}</td></tr>
+      <tr><td class="k">Fecha Estimada:</td><td class="v">${data.date || "-"}</td></tr>
+    </table>
+
+    ${data.message ? `
+      <div class="block-title">Mensaje</div>
+      <div class="note">${data.message}</div>
+    ` : ``}
+  `;
 
     return {
-        html: baseTemplate(content),
-        text: `
-            Nuevo Contacto desde Web TODOCR
-            ==============================
-            Nombre: ${data.name}
-            Email: ${data.email}
-            Teléfono: ${data.phone}
-            Servicio: ${data.service}
-            Tamaño: ${data.size}
-            Fecha: ${data.date}
-            ${data.message ? `\nMensaje:\n${data.message}` : ''}
-        `
+        html: baseTemplate(content, { preheader: `Nuevo contacto: ${data.name || ""} — TODOCR` }),
+        text:
+            `Nuevo Contacto — TODOCR
+Nombre: ${data.name}
+Email: ${data.email}
+Teléfono: ${data.phone}
+Servicio: ${data.service}
+Tamaño: ${data.size}
+Fecha: ${data.date}
+${data.message ? `Mensaje:\n${data.message}` : ""}`
     };
 };
 
-// Template para cotizaciones detalladas
+// =======================
+//  Quotation (Cotización)
+// =======================
 exports.quotationTemplate = (data) => {
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('es-CR', {
-            style: 'currency',
-            currency: 'CRC'
-        }).format(amount);
-    };
+    const fmtCRC = (n) =>
+        new Intl.NumberFormat('es-CR', { style: 'currency', currency: 'CRC' }).format(n);
 
     const content = `
-        <div class="content">
-            <h2 style="color: #74A643; margin-bottom: 20px;">Cotización de Servicios</h2>
-            
-            <table class="data-table">
-                <tr><th colspan="2">Información del Cliente</th></tr>
-                <tr>
-                    <td><strong>Nombre:</strong></td>
-                    <td>${data.cliente.nombre}</td>
-                </tr>
-                <tr>
-                    <td><strong>Email:</strong></td>
-                    <td>${data.cliente.email}</td>
-                </tr>
-                <tr>
-                    <td><strong>Teléfono:</strong></td>
-                    <td>${data.cliente.telefono}</td>
-                </tr>
-                <tr>
-                    <td><strong>Dirección:</strong></td>
-                    <td>${data.cliente.direccion}</td>
-                </tr>
-            </table>
+    <div class="badge">Cotización de Servicios</div>
 
-            <table class="data-table">
-                <tr><th colspan="2">Detalles del Servicio</th></tr>
-                <tr>
-                    <td><strong>Tipo:</strong></td>
-                    <td>${data.servicio.categoria} - ${data.servicio.tipo}</td>
-                </tr>
-                <tr>
-                    <td><strong>Fecha:</strong></td>
-                    <td>${new Date(data.servicio.fecha).toLocaleDateString('es-CR')}</td>
-                </tr>
-                ${data.servicio.area ? `
-                    <tr>
-                        <td><strong>Área:</strong></td>
-                        <td>${data.servicio.area} m²</td>
-                    </tr>
-                ` : ''}
-                <tr>
-                    <td><strong>Horas estimadas:</strong></td>
-                    <td>${data.servicio.horasEstimadas || 'N/A'}</td>
-                </tr>
-            </table>
+    <div class="block-title">Información del Cliente</div>
+    <table class="kv" role="presentation" cellpadding="0" cellspacing="0">
+      <tr><td class="k">Nombre:</td><td class="v">${data.cliente.nombre || "-"}</td></tr>
+      <tr><td class="k">Email:</td><td class="v"><a href="mailto:${data.cliente.email}">${data.cliente.email || "-"}</a></td></tr>
+      <tr><td class="k">Teléfono:</td><td class="v">${data.cliente.telefono || "-"}</td></tr>
+      <tr><td class="k">Dirección:</td><td class="v">${data.cliente.direccion || "-"}</td></tr>
+    </table>
 
-            <table class="data-table">
-                <tr><th colspan="2">Desglose de Costos</th></tr>
-                <tr>
-                    <td><strong>Mano de obra:</strong></td>
-                    <td>${formatCurrency(data.costos.manoDeObra)}</td>
-                </tr>
-                ${data.materiales && data.materiales.length > 0 ? `
-                    <tr>
-                        <td><strong>Total materiales:</strong></td>
-                        <td>${formatCurrency(data.costos.totalMateriales)}</td>
-                    </tr>
-                ` : ''}
-                ${data.costos.desplazamiento ? `
-                    <tr>
-                        <td><strong>Desplazamiento:</strong></td>
-                        <td>${formatCurrency(data.costos.desplazamiento)}</td>
-                    </tr>
-                ` : ''}
-            </table>
+    <div class="block-title">Detalles del Servicio</div>
+    <table class="kv" role="presentation" cellpadding="0" cellspacing="0">
 
-            ${data.materiales && data.materiales.length > 0 ? `
-                <table class="data-table">
-                    <tr><th colspan="4">Detalle de Materiales</th></tr>
-                    <tr>
-                        <th>Material</th>
-                        <th>Cantidad</th>
-                        <th>Precio</th>
-                        <th>Subtotal</th>
-                    </tr>
-                    ${data.materiales.map(mat => `
-                        <tr>
-                            <td>${mat.nombre}</td>
-                            <td>${mat.cantidad}</td>
-                            <td>${formatCurrency(mat.precio)}</td>
-                            <td>${formatCurrency(mat.subtotal)}</td>
-                        </tr>
-                    `).join('')}
-                </table>
-            ` : ''}
+    <tr><td class="k">Tipo de Trabajo:</td><td class="v">${getCategoryName(data.servicio.categoria)} — ${getServiceName(data.servicio.categoria, data.servicio.tipo)}</td></tr>      
+    <tr><td class="k">Fecha Estimada:</td><td class="v">${new Date(data.servicio.fecha).toLocaleDateString('es-CR')}</td></tr>
+      ${data.servicio.area ? `<tr><td class="k">Área:</td><td class="v">${data.servicio.area} m²</td></tr>` : ``}
+      <tr><td class="k">Horas estimadas:</td><td class="v">${data.servicio.horasEstimadas ?? "N/A"}</td></tr>
+    </table>
 
-            ${data.observaciones ? `
-                <div class="message-box">
-                    <strong>Observaciones:</strong><br>
-                    ${data.observaciones}
-                </div>
-            ` : ''}
+    ${data.materiales?.length ? `
+      <div class="block-title">Detalle de Materiales</div>
+      <table class="totals" role="presentation" cellpadding="0" cellspacing="0">
+        <tr class="header">
+          <td>Material</td>
+          <td align="center">Cantidad</td>
+          <td align="right">Precio Unit.</td>
+          <td align="right">Subtotal</td>
+        </tr>
+        ${data.materiales.map(m => `
+          <tr class="row">
+            <td>${m.nombre}</td>
+            <td align="center">${m.cantidad}</td>
+            <td align="right">${fmtCRC(m.precio)}</td>
+            <td align="right">${fmtCRC(m.subtotal)}</td>
+          </tr>
+        `).join('')}
+      </table>
+    `: ``}
 
-            <table class="data-table" style="margin-top: 20px;">
-                <tr>
-                    <td><strong>Sub Total:</strong></td>
-                    <td style="text-align: right">${formatCurrency(data.totales.subtotal)}</td>
-                </tr>
-                <tr>
-                    <td><strong>IVA (13%):</strong></td>
-                    <td style="text-align: right">${formatCurrency(data.totales.iva)}</td>
-                </tr>
-                <tr style="background-color: #1E88C7; color: white;">
-                    <td><strong>Total:</strong></td>
-                    <td style="text-align: right"><strong>${formatCurrency(data.totales.total)}</strong></td>
-                </tr>
-            </table>
+    <div class="block-title">Desglose de Costos</div>
+    <table class="kv" role="presentation" cellpadding="0" cellspacing="0">
+      <tr><td class="k">Mano de obra:</td><td class="v">${fmtCRC(data.costos.manoDeObra)}</td></tr>
+      ${data.materiales?.length ? `<tr><td class="k">Materiales:</td><td class="v">${fmtCRC(data.costos.totalMateriales)}</td></tr>` : ``}
+      ${data.costos.desplazamiento ? `<tr><td class="k">Desplazamiento:</td><td class="v">${fmtCRC(data.costos.desplazamiento)}</td></tr>` : ``}
+    </table>
 
-            <div style="text-align: right; margin-top: 10px; font-size: 0.9em; color: #666;">
-                <small>(US$ ${Math.round(data.totales.dolares).toLocaleString()})</small>
-            </div>
-        </div>
-    `;
+    ${data.observaciones ? `
+      <div class="block-title">Observaciones</div>
+      <div class="note">${data.observaciones}</div>
+    `: ``}
+
+    <div class="block-title">Totales</div>
+    <table class="totals" role="presentation" cellpadding="0" cellspacing="0">
+      <tr class="row"><td><strong>Sub Total</strong></td><td align="right">${fmtCRC(data.totales.subtotal)}</td></tr>
+      <tr class="row"><td><strong>IVA (13%)</strong></td><td align="right">${fmtCRC(data.totales.iva)}</td></tr>
+      <tr class="grand"><td><strong>Total Final</strong></td><td align="right"><strong>${fmtCRC(data.totales.total)}</strong></td></tr>
+    </table>
+    <div style="text-align:right; color:#6b7280; font-size:12px; margin-top:6px;">
+      ≈ US$ ${Math.round(data.totales.dolares).toLocaleString()}
+    </div>
+  `;
 
     return {
-        html: baseTemplate(content),
-        text: `
-            Cotización TODOCR
-            =================
-            INFORMACIÓN DEL CLIENTE
-            Nombre: ${data.cliente.nombre}
-            Email: ${data.cliente.email}
-            Teléfono: ${data.cliente.telefono}
-            Dirección: ${data.cliente.direccion}
+        html: baseTemplate(content, { preheader: `Cotización — ${data.cliente.nombre || "Cliente"} · TODOCR` }),
+        text:
+            `Cotización TODOCR
+CLIENTE
+Nombre: ${data.cliente.nombre}
+Email: ${data.cliente.email}
+Teléfono: ${data.cliente.telefono}
+Dirección: ${data.cliente.direccion}
 
-            DETALLES DEL SERVICIO
-            Tipo: ${data.servicio.categoria} - ${data.servicio.tipo}
-            Fecha: ${new Date(data.servicio.fecha).toLocaleDateString('es-CR')}
-            ${data.servicio.area ? `Área: ${data.servicio.area} m²` : ''}
-            Horas estimadas: ${data.servicio.horasEstimadas || 'N/A'}
+SERVICIO
+Tipo: ${data.servicio.categoria} — ${data.servicio.tipo}
+Fecha: ${new Date(data.servicio.fecha).toLocaleDateString('es-CR')}
+${data.servicio.area ? `Área: ${data.servicio.area} m²` : ``}
+Horas estimadas: ${data.servicio.horasEstimadas ?? "N/A"}
 
-            DESGLOSE DE COSTOS
-            Mano de obra: ${formatCurrency(data.costos.manoDeObra)}
-            ${data.materiales && data.materiales.length > 0 ? `Total materiales: ${formatCurrency(data.costos.totalMateriales)}` : ''}
-            ${data.costos.desplazamiento ? `Desplazamiento: ${formatCurrency(data.costos.desplazamiento)}` : ''}
+${data.materiales?.length ? `MATERIALES
+${data.materiales.map(m => `${m.nombre}: ${m.cantidad} × ${fmtCRC(m.precio)} = ${fmtCRC(m.subtotal)}`).join('\n')}
+` : ``}
 
-            ${data.materiales && data.materiales.length > 0 ? `
-            DETALLE DE MATERIALES
-            ${data.materiales.map(mat =>
-            `${mat.nombre}: ${mat.cantidad} x ${formatCurrency(mat.precio)} = ${formatCurrency(mat.subtotal)}`
-        ).join('\n')}
-            ` : ''}
+COSTOS
+Mano de obra: ${fmtCRC(data.costos.manoDeObra)}
+${data.materiales?.length ? `Materiales: ${fmtCRC(data.costos.totalMateriales)}` : ``}
+${data.costos.desplazamiento ? `Desplazamiento: ${fmtCRC(data.costos.desplazamiento)}` : ``}
+${data.observaciones ? `\nOBSERVACIONES:\n${data.observaciones}` : ``}
 
-            ${data.observaciones ? `\nOBSERVACIONES:\n${data.observaciones}` : ''}
-
-            TOTALES
-            Sub Total: ${formatCurrency(data.totales.subtotal)}
-            IVA (13%): ${formatCurrency(data.totales.iva)}
-            Total: ${formatCurrency(data.totales.total)}
-            (US$ ${Math.round(data.totales.dolares).toLocaleString()})
-        `
+TOTALES
+Sub Total: ${fmtCRC(data.totales.subtotal)}
+IVA (13%): ${fmtCRC(data.totales.iva)}
+Total Final: ${fmtCRC(data.totales.total)}
+≈ US$ ${Math.round(data.totales.dolares).toLocaleString()}`
     };
 };
 
-// Template para reportes de limpieza
+// ======================
+//  Cleaning Report Email
+// ======================
 exports.reportTemplate = (data) => {
     const content = `
-        <div class="content">
-            <h2 style="color: #74A643; margin-bottom: 20px;">Reporte de Limpieza</h2>
-            <table class="data-table">
-                <tr>
-                    <td><strong>Tipo:</strong></td>
-                    <td>${data.type}</td>
-                </tr>
-                <tr>
-                    <td><strong>Fecha:</strong></td>
-                    <td>${data.date}</td>
-                </tr>
-            </table>
+    <div class="badge">Reporte de Limpieza</div>
 
-            <h3>Tareas Completadas:</h3>
-            <table class="data-table">
-                ${data.tasks.map(task => `
-                    <tr>
-                        <td>${task.completed ? '✅' : '❌'}</td>
-                        <td>${task.text}</td>
-                    </tr>
-                `).join('')}
-            </table>
+    <table class="kv" role="presentation" cellpadding="0" cellspacing="0">
+      <tr><td class="k">Tipo:</td><td class="v">${data.type}</td></tr>
+      <tr><td class="k">Fecha:</td><td class="v">${data.date}</td></tr>
+    </table>
 
-            ${data.comments ? `
-                <div class="message-box">
-                    <strong>Comentarios:</strong><br>
-                    ${data.comments}
-                </div>
-            ` : ''}
-        </div>
-    `;
+    <div class="block-title">Tareas Completadas</div>
+    <table class="kv" role="presentation" cellpadding="0" cellspacing="0">
+      ${data.tasks.map(t => `
+        <tr><td class="k" style="width:48px;">${t.completed ? "✅" : "❌"}</td><td class="v">${t.text}</td></tr>
+      `).join('')}
+    </table>
+
+    ${data.comments ? `
+      <div class="block-title">Comentarios</div>
+      <div class="note">${data.comments}</div>
+    `: ``}
+  `;
 
     return {
-        html: baseTemplate(content),
-        text: `
-            Reporte de Limpieza TODOCR
-            =========================
-            Tipo: ${data.type}
-            Fecha: ${data.date}
+        html: baseTemplate(content, { preheader: `Reporte de limpieza — ${data.type}` }),
+        text:
+            `Reporte de Limpieza — TODOCR
+Tipo: ${data.type}
+Fecha: ${data.date}
 
-            TAREAS COMPLETADAS:
-            ${data.tasks.map(task =>
-            `${task.completed ? '✓' : '✗'} ${task.text}`
-        ).join('\n')}
-
-            ${data.comments ? `\nCOMENTARIOS:\n${data.comments}` : ''}
-        `
+TAREAS:
+${data.tasks.map(t => `${t.completed ? "✓" : "✗"} ${t.text}`).join("\n")}
+${data.comments ? `\nCOMENTARIOS:\n${data.comments}` : ""}`
     };
 };
