@@ -52,8 +52,7 @@ router.post('/contact-home', async (req, res) => {
     }
 });
 
-// Ruta para el cotizador (desde cotizador.html)
-router.post('/quote', upload.array('attachments'), async (req, res) => {
+router.post('/quote-new', upload.array('attachments'), async (req, res) => {
     try {
         const { to, cc, service, datos } = req.body;
 
@@ -72,6 +71,14 @@ router.post('/quote', upload.array('attachments'), async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: 'Error al procesar los datos JSON'
+            });
+        }
+
+        // Validar datos esenciales
+        if (!datosCompletos.cliente || !datosCompletos.cliente.email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Datos del cliente incompletos'
             });
         }
 
@@ -103,12 +110,13 @@ router.post('/quote', upload.array('attachments'), async (req, res) => {
             service
         });
 
-        const emailContent = quotationTemplate(datosCompletos);
+        // Usar la nueva plantilla para el nuevo cotizador
+        const emailContent = require('../utils/emailTemplates').newQuotationTemplate(datosCompletos);
 
         await EmailService.sendEmail({
             to: to || 'info.todocr@gmail.com',
             cc: cc ? [cc] : [],
-            subject: `Cotización TODOCR: ${service}`,
+            subject: `Cotización TODOCR: ${datosCompletos.cliente.nombre}`,
             html: emailContent.html,
             text: emailContent.text,
             attachments: processedAttachments
@@ -116,7 +124,7 @@ router.post('/quote', upload.array('attachments'), async (req, res) => {
 
         res.json({ success: true });
     } catch (error) {
-        console.error('Error detallado en ruta /quote:', error);
+        console.error('Error detallado en ruta /quote-new:', error);
 
         // Determinar el tipo de error y establecer el mensaje apropiado
         let errorMessage = 'Error al enviar la cotización';
@@ -144,7 +152,6 @@ router.post('/quote', upload.array('attachments'), async (req, res) => {
         });
     }
 });
-
 
 
 // Ruta para el reporte de limpieza (desde reporte.html)

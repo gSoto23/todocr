@@ -8,7 +8,10 @@ class EmailService {
         try {
             const msg = {
                 to,
-                from: config.fromEmail,
+                from: {
+                    email: config.fromEmail,
+                    name: "TODOCR"
+                },
                 subject,
                 text,
                 html

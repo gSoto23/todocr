@@ -1,40 +1,46 @@
+
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_IMAGES = 10;
 
 class ImageHandler {
     constructor() {
-        this.fileInput = document.getElementById('fotos');
-        this.previewContainer = document.getElementById('preview');
         this.images = [];
-
         this.init();
     }
 
     init() {
-        this.fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+        // Esperar a que el DOM esté cargado
+        document.addEventListener('DOMContentLoaded', () => {
+            this.fileInput = document.getElementById('imageInput');
+            this.previewContainer = document.getElementById('imagePreview');
+            
+            if (this.fileInput) {
+                this.fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+            }
+        });
     }
 
     handleFileSelect(event) {
         const files = Array.from(event.target.files);
 
-        // Validate total images
+        // Validar número total de imágenes
         if (this.images.length + files.length > MAX_IMAGES) {
-            alert(`Máximo ${MAX_IMAGES} imágenes permitidas`);
+            this.showError(`Máximo ${MAX_IMAGES} imágenes permitidas`);
             return;
         }
 
-        // Validate each file
+        // Validar cada archivo
         const invalidFiles = files.filter(file => !this.isValidFile(file));
         if (invalidFiles.length > 0) {
-            alert('Algunos archivos no son válidos. Use imágenes JPG/PNG/WEBP menores a 5MB.');
+            this.showError('Algunos archivos no son válidos. Use imágenes JPG/PNG/WEBP menores a 5MB.');
             return;
         }
 
-        // Process valid files
+        // Procesar archivos válidos
         files.forEach(file => this.processFile(file));
 
-        // Clear input
+        // Limpiar input
         this.fileInput.value = '';
     }
 
@@ -47,6 +53,9 @@ class ImageHandler {
             const preview = await this.createPreview(file);
             this.previewContainer.appendChild(preview);
             this.images.push(file);
+            
+            // Actualizar contador de imágenes
+            this.updateImageCounter();
         } catch (error) {
             console.error('Error processing file:', error);
         }
@@ -58,11 +67,11 @@ class ImageHandler {
 
             reader.onload = (e) => {
                 const container = document.createElement('div');
-                container.className = 'preview-container fade-in';
+                container.className = 'preview-item';
 
                 const img = document.createElement('img');
                 img.src = e.target.result;
-                img.className = 'thumb';
+                img.className = 'preview-image';
                 img.alt = file.name;
 
                 const removeBtn = document.createElement('button');
@@ -74,6 +83,7 @@ class ImageHandler {
                         this.images.splice(index, 1);
                     }
                     container.remove();
+                    this.updateImageCounter();
                 };
 
                 container.appendChild(img);
@@ -87,6 +97,22 @@ class ImageHandler {
         });
     }
 
+    updateImageCounter() {
+        const counter = document.getElementById('imageCounter');
+        if (counter) {
+            counter.textContent = `${this.images.length}/${MAX_IMAGES}`;
+        }
+    }
+
+    showError(message) {
+        // Usar el sistema de notificaciones existente si está disponible
+        if (window.emailHandler && typeof window.emailHandler.mostrarNotificacion === 'function') {
+            window.emailHandler.mostrarNotificacion('error', message);
+        } else {
+            alert(message);
+        }
+    }
+
     getImages() {
         return this.images;
     }
@@ -96,13 +122,10 @@ class ImageHandler {
         if (this.previewContainer) {
             this.previewContainer.innerHTML = '';
         }
+        this.updateImageCounter();
     }
 
-    getFiles() {
-        return Array.from(this.images || []);
-    }
-
-    // Compresión de imágenes antes de envío (opcional)
+    // Compresión de imágenes antes de envío
     async compressImage(file) {
         return new Promise((resolve, reject) => {
             if (!file || !(file instanceof File)) {
@@ -160,11 +183,10 @@ class ImageHandler {
             reader.readAsDataURL(file);
         });
     }
-
 }
 
-// Initialize the image handler
+// Inicializar el manejador de imágenes
 const imageHandler = new ImageHandler();
 
-// Export for use in other modules if needed
+// Exportar para uso en otros módulos
 window.imageHandler = imageHandler;
