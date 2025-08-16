@@ -1,6 +1,7 @@
 // API Configuration
 const API_CONFIG = {
-    BASE_URL: 'https://todocr.com',
+    BASE_URL: 'https://todocr.com/',
+    // BASE_URL: 'http://localhost:3000',
     ENDPOINTS: {
         CONTACT: '/api/email/contact-home'
     }
