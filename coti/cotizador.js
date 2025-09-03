@@ -620,7 +620,7 @@ function exportarPDF() {
                         const element = document.getElementById('pdf-content');
                         html2pdf().from(element).set(opt).save().then(() => {
                             // Opcional: cerrar la ventana después de la descarga
-                            window.close();
+                            // window.close();
                         });
                     });
                     
