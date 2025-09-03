@@ -402,11 +402,15 @@ function exportarPDF() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Cotización TODOCR - ${nombreCliente}</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap" rel="stylesheet">
         <style>
             body {
-                font-family: Arial, Helvetica, sans-serif;
+                font-family: "Bai Jamjuree", system-ui, -apple-system, Segoe UI, Roboto, Arial;
                 padding: 20px;
                 background-color: #f3f4f6;
+                --tp-blue: #1E88C7;
+                --tp-yellow: #E8A62B;
             }
             .container {
                 max-width: 800px;
@@ -426,10 +430,10 @@ function exportarPDF() {
                 padding: 8px 12px;
             }
             th {
-                background-color: #1E88C7;
+                background-color: var(--tp-blue);
                 color: white;
                 text-align: left;
-                font-weight: bold;
+                font-weight: 600;
             }
             tr:nth-child(even) {
                 background-color: #f9fafb;
@@ -441,7 +445,7 @@ function exportarPDF() {
                 margin-bottom: 20px;
             }
             .logo {
-                height: 140px;
+                height: 150px;
             }
             .client-info {
                 margin-bottom: 20px;
@@ -459,15 +463,15 @@ function exportarPDF() {
                 padding-top: 15px;
             }
             .button {
-                background-color: #1E88C7;
+                background-color: var(--tp-blue);
                 color: white;
                 border: none;
                 padding: 10px 20px;
-                border-radius: 12px;
+                border-radius: 0.75rem;
                 cursor: pointer;
                 font-size: 16px;
                 margin-top: 20px;
-                font-weight: bold;
+                font-weight: 700;
             }
             .button:hover {
                 background-color: #1a75ab;
@@ -476,34 +480,22 @@ function exportarPDF() {
                 text-align: center;
             }
             h1, h2 {
-                font-weight: bold;
+                font-weight: 600;
             }
             .observaciones {
                 background-color: #f9fafb;
-                border-left: 4px solid #E8A62B;
+                border-left: 4px solid var(--tp-yellow);
                 padding: 15px;
                 margin-bottom: 20px;
-            }
-            /* Evitar que el pie de página se corte */
-            @media print {
-                .footer {
-                    position: fixed;
-                    bottom: 0;
-                    width: 100%;
-                    background: white;
-                }
-                .content-wrapper {
-                    margin-bottom: 80px; /* Espacio para el footer */
-                }
             }
         </style>
     </head>
     <body>
-        <div class="container" id="pdf-container">
-            <div id="pdf-content" class="content-wrapper">
+        <div class="container">
+            <div id="pdf-content">
                 <!-- Logo y encabezado -->
                 <div class="header">
-                    <img src="logotodocrmini.png" alt="TODOCR Logo" class="logo">
+                    <img src="../assets/logotodocrmini.png" alt="TODOCR Logo" class="logo" style="height: 140px;">
                     <div style="text-align: right;">
                         <p><strong>TODOCR | COTIZACIÓN</strong></p>
                         <p>Limpieza y Jardinería</p>
@@ -521,95 +513,95 @@ function exportarPDF() {
                     <p style="color: #4b5563; font-size: 14px;">Fecha: ${new Date(fechaCotizacion).toLocaleDateString('es-CR')}</p>
                 </div>
 
-                <!-- Servicios -->
-                ${servicios.length > 0 ? `
-                    <h2 style="color: #1E88C7; font-size: 16px; margin-top: 20px;">SERVICIOS</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Descripción</th>
-                                <th style="text-align: center;">Cantidad</th>
-                                <th style="text-align: center;">Precio Unitario</th>
-                                <th style="text-align: right;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${servicios.map((s, index) => `
-                                <tr>
-                                    <td>${s.descripcion || 'Sin descripción'}</td>
-                                    <td style="text-align: center;">${s.cantidad}</td>
-                                    <td style="text-align: right;">${formatoMoneda.format(s.precioUnitario)}</td>
-                                    <td style="text-align: right;">${formatoMoneda.format(s.total)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    <div style="text-align: right; margin-bottom: 15px;">
-                        <strong>Total Servicios:</strong> ${formatoMoneda.format(totalServicios)}
-                    </div>
-                ` : ''}
+                        <!-- Servicios -->
+                        ${servicios.length > 0 ? `
+                            <h2 style="color: #1E88C7; font-size: 16px; margin-top: 20px;">SERVICIOS</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th style="text-align: center;">Cantidad</th>
+                                        <th style="text-align: center;">Precio Unitario</th>
+                                        <th style="text-align: right;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${servicios.map((s, index) => `
+                                        <tr>
+                                            <td>${s.descripcion || 'Sin descripción'}</td>
+                                            <td style="text-align: center;">${s.cantidad}</td>
+                                            <td style="text-align: right;">${formatoMoneda.format(s.precioUnitario)}</td>
+                                            <td style="text-align: right;">${formatoMoneda.format(s.total)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            <div style="text-align: right; margin-bottom: 15px;">
+                                <strong>Total Servicios:</strong> ${formatoMoneda.format(totalServicios)}
+                            </div>
+                        ` : ''}
 
-                <!-- Materiales -->
-                ${materiales.length > 0 ? `
-                    <h2 style="color: #1E88C7; font-size: 16px; margin-top: 20px;">MATERIALES/INSUMOS</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Descripción</th>
-                                <th style="text-align: center;">Cantidad</th>
-                                <th style="text-align: right;">Precio Unitario</th>
-                                <th style="text-align: right;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${materiales.map((m, index) => `
-                                <tr>
-                                    <td>${m.descripcion || 'Sin descripción'}</td>
-                                    <td style="text-align: center;">${m.cantidad}</td>
-                                    <td style="text-align: right;">${formatoMoneda.format(m.precioUnitario)}</td>
-                                    <td style="text-align: right;">${formatoMoneda.format(m.total)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    <div style="text-align: right; margin-bottom: 15px;">
-                        <strong>Total Materiales:</strong> ${formatoMoneda.format(totalMateriales)}
-                    </div>
-                ` : ''}
+                        <!-- Materiales -->
+                        ${materiales.length > 0 ? `
+                            <h2 style="color: #1E88C7; font-size: 16px; margin-top: 20px;">MATERIALES/INSUMOS</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th style="text-align: center;">Cantidad</th>
+                                        <th style="text-align: right;">Precio Unitario</th>
+                                        <th style="text-align: right;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${materiales.map((m, index) => `
+                                        <tr>
+                                            <td>${m.descripcion || 'Sin descripción'}</td>
+                                            <td style="text-align: center;">${m.cantidad}</td>
+                                            <td style="text-align: right;">${formatoMoneda.format(m.precioUnitario)}</td>
+                                            <td style="text-align: right;">${formatoMoneda.format(m.total)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            <div style="text-align: right; margin-bottom: 15px;">
+                                <strong>Total Materiales:</strong> ${formatoMoneda.format(totalMateriales)}
+                            </div>
+                        ` : ''}
 
-                <!-- Comentarios -->
-                ${comentarios ? `
-                    <h2 style="color: #1E88C7; font-size: 16px; margin-top: 20px;">OBSERVACIONES</h2>
-                    <div class="observaciones">
-                    ${comentarios.replace(/\n/g, '<br>')}
-                    </div>
-                ` : ''}
+                        <!-- Comentarios -->
+                        ${comentarios ? `
+                            <h2 style="color: var(--tp-blue); font-size: 16px; margin-top: 20px;">OBSERVACIONES</h2>
+                            <div class="observaciones">
+                            ${comentarios.replace(/\n/g, '<br>')}
+                            </div>
+                        ` : ''}
 
-                <!-- Totales -->
-                <div class="total-section">
-                    <p>Subtotal: <strong>${formatoMoneda.format(subtotal)}</strong></p>
-                    <p>IVA (13%): <strong>${formatoMoneda.format(iva)}</strong></p>
-                    <p style="font-size: 18px; font-weight: bold; color: #1E88C7;">
-                        Total: ${formatoMoneda.format(total)}
-                    </p>
+                        <!-- Totales -->
+                        <div class="total-section">
+                            <p>Subtotal: <strong>${formatoMoneda.format(subtotal)}</strong></p>
+                            <p>IVA (13%): <strong>${formatoMoneda.format(iva)}</strong></p>
+                            <p style="font-size: 18px; font-weight: bold; color: #1E88C7;">
+                                Total: ${formatoMoneda.format(total)}
+                            </p>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="footer">
+                            <p>TOMATO COSTA RICA ANY SRL · Cédula Jurídica: 3102816296 · wwww.todocr.com</p>
+                            <p style="margin-top: 8px;">© ${new Date().getFullYear()} TODOCR · Poás, Alajuela, Costa Rica</p>
+                        </div>
+                    </div>
+
+                    <!-- Botón para generar PDF -->
+                    <div class="center">
+                        <button id="download-pdf" class="button">
+                            Descargar PDF
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Footer - Fuera del div principal para evitar que se corte -->
-            <div class="footer" id="pdf-footer">
-                <p>TOMATO COSTA RICA ANY SRL · Cédula Jurídica: 3102816296 · www.todocr.com</p>
-                <p style="margin-top: 8px;">© ${new Date().getFullYear()} TODOCR · Poás, Alajuela, Costa Rica</p>
-            </div>
-
-            <!-- Botón para generar PDF -->
-            <div class="center" style="margin-top: 40px;">
-                <button id="download-pdf" class="button">
-                    Descargar PDF
-                </button>
-            </div>
-        </div>
-
-        <script>
+                <script>
             // Precargar la imagen del logo
             function precargarImagen(url) {
                 return new Promise((resolve, reject) => {
@@ -678,8 +670,9 @@ function exportarPDF() {
                     });
             }
         </script>
-    </body>
-    </html>
+
+            </body>
+            </html>
         `);
 
         // Cerrar el documento para finalizar la escritura
@@ -689,7 +682,7 @@ function exportarPDF() {
         setTimeout(() => {
             ocultarCarga();
             mostrarExito('Vista previa de PDF generada correctamente');
-        }, 2500);
+        }, 1500);
 
     } catch (error) {
         console.error('Error al preparar los datos para el PDF:', error);
