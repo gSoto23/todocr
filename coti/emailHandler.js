@@ -5,8 +5,8 @@ class EmailHandler {
 
     initializeConfig() {
         this.API_CONFIG = {
-            BASE_URL: 'http://localhost:3000',
-            // BASE_URL: 'https://todocr.com/',
+            // BASE_URL: 'http://localhost:3000',
+            BASE_URL: 'https://todocr.com/',
             ENDPOINTS: {
                 QUOTE: '/api/email/quote-new'
             }
