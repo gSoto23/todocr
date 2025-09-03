@@ -365,7 +365,6 @@ function enviarPorEmail() {
 }
 
 // Función para exportar a PDF
-// Función para exportar a PDF - Implementación basada en test.html
 function exportarPDF() {
     if (!validarDatos()) return;
     mostrarCarga();
@@ -455,12 +454,13 @@ function exportarPDF() {
                 margin-top: 20px;
             }
             .footer {
-                margin-top: 30px;
+                margin-top: 50px; /* Aumentado para dar más espacio */
                 text-align: center;
                 font-size: 12px;
                 color: #6b7280;
                 border-top: 1px solid #e5e7eb;
                 padding-top: 15px;
+                padding-bottom: 15px; /* Añadido padding-bottom */
             }
             .button {
                 background-color: var(--tp-blue);
@@ -586,6 +586,9 @@ function exportarPDF() {
                             </p>
                         </div>
 
+                        <!-- Espacio adicional antes del footer -->
+                        <div style="height: 40px;"></div>
+
                         <!-- Footer -->
                         <div class="footer">
                             <p>TOMATO COSTA RICA ANY SRL · Cédula Jurídica: 3102816296 · wwww.todocr.com</p>
@@ -602,32 +605,48 @@ function exportarPDF() {
                 </div>
 
                 <script>
-                    // Función para generar el PDF cuando se hace clic en el botón
-                    document.getElementById('download-pdf').addEventListener('click', function() {
-                        // Ocultar el botón antes de generar el PDF
-                        this.style.display = 'none';
-                        
-                        // Opciones para html2pdf
-                        const opt = {
-                            margin: [0.5, 0.5, 0.8, 0.5],
-                            filename: 'Cotizacion_TODOCR_${nombreCliente.replace(/\s+/g, '_')}.pdf',
-                            image: { type: 'jpeg', quality: 0.98 },
-                            html2canvas: { scale: 2 },
-                            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-                        };
-                        
-                        // Generar el PDF
-                        const element = document.getElementById('pdf-content');
-                        html2pdf().from(element).set(opt).save().then(() => {
-                            // Opcional: cerrar la ventana después de la descarga
-                            // window.close();
+                    // Esperar a que todos los recursos se carguen
+                    window.addEventListener('load', function() {
+                        // Función para generar el PDF cuando se hace clic en el botón
+                        document.getElementById('download-pdf').addEventListener('click', function() {
+                            // Ocultar el botón antes de generar el PDF
+                            this.style.display = 'none';
+                            
+                            // Opciones para html2pdf
+                            const opt = {
+                                margin: [10, 10, 25, 10], // Aumentado el margen inferior a 25mm
+                                filename: 'Cotizacion_TODOCR_${nombreCliente.replace(/\s+/g, '_')}.pdf',
+                                image: { type: 'jpeg', quality: 0.98 },
+                                html2canvas: { 
+                                    scale: 2,
+                                    useCORS: true,
+                                    logging: true,
+                                    // Permitir más altura para el contenido
+                                    windowHeight: 1500
+                                },
+                                jsPDF: { 
+                                    unit: 'mm', 
+                                    format: 'a4', 
+                                    orientation: 'portrait',
+                                    compress: true
+                                },
+                                pagebreak: { mode: 'avoid-all' } // Evitar cortes de contenido
+                            };
+                            
+                            // Generar el PDF
+                            const element = document.getElementById('pdf-content');
+                            html2pdf().from(element).set(opt).save();
+                            
+                            // NO cerrar la ventana automáticamente para permitir que el usuario revise
+                            // window.close(); <-- COMENTADO como mencionaste
                         });
+                        
+                        // Generar automáticamente después de más tiempo para asegurar carga completa
+                        setTimeout(function() {
+                            console.log('Iniciando generación automática del PDF');
+                            document.getElementById('download-pdf').click();
+                        }, 3000); // Aumentado a 3 segundos
                     });
-                    
-                    // Generar automáticamente después de 1 segundo
-                    setTimeout(function() {
-                        document.getElementById('download-pdf').click();
-                    }, 1000);
                 </script>
             </body>
             </html>
@@ -640,7 +659,7 @@ function exportarPDF() {
         setTimeout(() => {
             ocultarCarga();
             mostrarExito('Vista previa de PDF generada correctamente');
-        }, 1500);
+        }, 4000); // Aumentado el tiempo para permitir la carga completa
 
     } catch (error) {
         console.error('Error al preparar los datos para el PDF:', error);
