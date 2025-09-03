@@ -609,10 +609,10 @@ function exportarPDF() {
                         
                         // Opciones para html2pdf
                         const opt = {
-                            margin: [0.5, 0.5, 0.8, 0.5],
+                            margin: [0.2, 0.2, 0.2, 0.2],
                             filename: 'Cotizacion_TODOCR_${nombreCliente.replace(/\s+/g, '_')}.pdf',
                             image: { type: 'jpeg', quality: 0.98 },
-                            html2canvas: { scale: 2 },
+                            html2canvas: { scale: 1.5 },
                             jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
                         };
                         
