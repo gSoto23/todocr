@@ -1,11 +1,6 @@
-
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:3000',
-    // BASE_URL: 'https://todocr.com/',
-    ENDPOINTS: {
-        QUOTE: '/api/email/quote-new',
-        PDF: '/api/pdf/generate'
-    }
+    // BASE_URL: 'http://localhost:3000',
+    BASE_URL: 'https://todocr.com/',
 };
 
 // cotizador.js
@@ -370,85 +365,287 @@ function enviarPorEmail() {
 }
 
 // Función para exportar a PDF
+// Función para exportar a PDF - Implementación basada en test.html
 function exportarPDF() {
     if (!validarDatos()) return;
     mostrarCarga();
 
     try {
-        // Recopilar los datos de la cotización
-        const datos = {
-            cliente: {
-                nombre: document.getElementById('clienteNombre').value.trim(),
-                email: document.getElementById('clienteEmail').value.trim(),
-                telefono: document.getElementById('clienteTelefono').value.trim()
-            },
-            fecha: document.getElementById('fechaCotizacion').value,
-            servicios: servicios.map(s => ({
-                descripcion: s.descripcion,
-                cantidad: s.cantidad,
-                precioUnitario: s.precioUnitario,
-                total: s.total
-            })),
-            materiales: materiales.map(m => ({
-                descripcion: m.descripcion,
-                cantidad: m.cantidad,
-                precioUnitario: m.precioUnitario,
-                total: m.total
-            })),
-            totales: {
-                subtotalServicios: servicios.reduce((sum, s) => sum + s.total, 0),
-                subtotalMateriales: materiales.reduce((sum, m) => sum + m.total, 0),
-                subtotal: servicios.reduce((sum, s) => sum + s.total, 0) + materiales.reduce((sum, m) => sum + m.total, 0),
-                iva: (servicios.reduce((sum, s) => sum + s.total, 0) + materiales.reduce((sum, m) => sum + m.total, 0)) * 0.13,
-                total: (servicios.reduce((sum, s) => sum + s.total, 0) + materiales.reduce((sum, m) => sum + m.total, 0)) * 1.13
-            },
-            comentarios: document.getElementById('comentarios').value.trim()
-        };
+        // Obtener datos de la cotización
+        const nombreCliente = document.getElementById('clienteNombre').value.trim();
+        const emailCliente = document.getElementById('clienteEmail').value.trim();
+        const telefonoCliente = document.getElementById('clienteTelefono').value.trim();
+        const fechaCotizacion = document.getElementById('fechaCotizacion').value;
+        const comentarios = document.getElementById('comentarios').value.trim();
 
-        // Configurar la solicitud
-        fetch(`${API_CONFIG.BASE_URL}/api/pdf/generate`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ datos }),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        throw new Error(data.message || `Error HTTP: ${response.status}`);
+        const totalServicios = servicios.reduce((sum, s) => sum + s.total, 0);
+        const totalMateriales = materiales.reduce((sum, m) => sum + m.total, 0);
+        const subtotal = totalServicios + totalMateriales;
+        const iva = subtotal * 0.13;
+        const total = subtotal + iva;
+
+        // Crear una nueva ventana para el PDF
+        const newWindow = window.open('', '_blank');
+
+        if (!newWindow) {
+            mostrarError('Por favor, permite las ventanas emergentes para generar el PDF');
+            ocultarCarga();
+            return;
+        }
+
+        // Escribir el HTML en la nueva ventana
+        newWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Cotización TODOCR - ${nombreCliente}</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: "Bai Jamjuree", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+                padding: 20px;
+                background-color: #f3f4f6;
+                --tp-blue: #1E88C7;
+                --tp-yellow: #E8A62B;
+            }
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                background-color: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 10px 24px rgba(0, 0, 0, .06);
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 15px 0;
+            }
+            th, td {
+                border: 1px solid #e5e7eb;
+                padding: 8px 12px;
+            }
+            th {
+                background-color: var(--tp-blue);
+                color: white;
+                text-align: left;
+                font-weight: 600;
+            }
+            tr:nth-child(even) {
+                background-color: #f9fafb;
+            }
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            .logo {
+                height: 150px;
+            }
+            .client-info {
+                margin-bottom: 20px;
+            }
+            .total-section {
+                text-align: right;
+                margin-top: 20px;
+            }
+            .footer {
+                margin-top: 30px;
+                text-align: center;
+                font-size: 12px;
+                color: #6b7280;
+                border-top: 1px solid #e5e7eb;
+                padding-top: 15px;
+            }
+            .button {
+                background-color: var(--tp-blue);
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 0.75rem;
+                cursor: pointer;
+                font-size: 16px;
+                margin-top: 20px;
+                font-weight: 700;
+            }
+            .button:hover {
+                background-color: #1a75ab;
+            }
+            .center {
+                text-align: center;
+            }
+            h1, h2 {
+                font-weight: 600;
+            }
+            .observaciones {
+                background-color: #f9fafb;
+                border-left: 4px solid var(--tp-yellow);
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div id="pdf-content">
+                <!-- Logo y encabezado -->
+                <div class="header">
+                    <img src="logotodocrmini.png" alt="TODOCR Logo" class="logo" style="height: 140px;">
+                    <div style="text-align: right;">
+                        <p><strong>TODOCR | COTIZACIÓN</strong></p>
+                        <p>Limpieza y Jardinería</p>
+                        <p>Tel: +506 7080 8613</p>
+                        <p>Email: info.todocr@gmail.com</p>
+                    </div>
+                </div>
+
+                <!-- Datos cliente -->
+                <div class="client-info">
+                    <h1 style="font-size: 20px;">Cotización ${nombreCliente}</h1>
+                    <p style="color: #4b5563; font-size: 14px;">Contacto: ${nombreCliente}</p>
+                    ${emailCliente ? `<p style="color: #4b5563; font-size: 14px;">Email: ${emailCliente}</p>` : ''}
+                    <p style="color: #4b5563; font-size: 14px;">Tel: ${telefonoCliente}</p>
+                    <p style="color: #4b5563; font-size: 14px;">Fecha: ${new Date(fechaCotizacion).toLocaleDateString('es-CR')}</p>
+                </div>
+
+                        <!-- Servicios -->
+                        ${servicios.length > 0 ? `
+                            <h2 style="color: #1E88C7; font-size: 16px; margin-top: 20px;">SERVICIOS</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th style="text-align: center;">Cantidad</th>
+                                        <th style="text-align: center;">Precio Unitario</th>
+                                        <th style="text-align: right;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${servicios.map((s, index) => `
+                                        <tr>
+                                            <td>${s.descripcion || 'Sin descripción'}</td>
+                                            <td style="text-align: center;">${s.cantidad}</td>
+                                            <td style="text-align: right;">${formatoMoneda.format(s.precioUnitario)}</td>
+                                            <td style="text-align: right;">${formatoMoneda.format(s.total)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            <div style="text-align: right; margin-bottom: 15px;">
+                                <strong>Total Servicios:</strong> ${formatoMoneda.format(totalServicios)}
+                            </div>
+                        ` : ''}
+
+                        <!-- Materiales -->
+                        ${materiales.length > 0 ? `
+                            <h2 style="color: #1E88C7; font-size: 16px; margin-top: 20px;">MATERIALES/INSUMOS</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th style="text-align: center;">Cantidad</th>
+                                        <th style="text-align: right;">Precio Unitario</th>
+                                        <th style="text-align: right;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${materiales.map((m, index) => `
+                                        <tr>
+                                            <td>${m.descripcion || 'Sin descripción'}</td>
+                                            <td style="text-align: center;">${m.cantidad}</td>
+                                            <td style="text-align: right;">${formatoMoneda.format(m.precioUnitario)}</td>
+                                            <td style="text-align: right;">${formatoMoneda.format(m.total)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            <div style="text-align: right; margin-bottom: 15px;">
+                                <strong>Total Materiales:</strong> ${formatoMoneda.format(totalMateriales)}
+                            </div>
+                        ` : ''}
+
+                        <!-- Comentarios -->
+                        ${comentarios ? `
+                            <h2 style="color: var(--tp-blue); font-size: 16px; margin-top: 20px;">OBSERVACIONES</h2>
+                            <div class="observaciones">
+                            ${comentarios.replace(/\n/g, '<br>')}
+                            </div>
+                        ` : ''}
+
+                        <!-- Totales -->
+                        <div class="total-section">
+                            <p>Subtotal: <strong>${formatoMoneda.format(subtotal)}</strong></p>
+                            <p>IVA (13%): <strong>${formatoMoneda.format(iva)}</strong></p>
+                            <p style="font-size: 18px; font-weight: bold; color: #1E88C7;">
+                                Total: ${formatoMoneda.format(total)}
+                            </p>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="footer">
+                            <p>TOMATO COSTA RICA ANY SRL · Cédula Jurídica: 3102816296 · wwww.todocr.com</p>
+                            <p style="margin-top: 8px;">© ${new Date().getFullYear()} TODOCR · Poás, Alajuela, Costa Rica</p>
+                        </div>
+                    </div>
+
+                    <!-- Botón para generar PDF -->
+                    <div class="center">
+                        <button id="download-pdf" class="button">
+                            Descargar PDF
+                        </button>
+                    </div>
+                </div>
+
+                <script>
+                    // Función para generar el PDF cuando se hace clic en el botón
+                    document.getElementById('download-pdf').addEventListener('click', function() {
+                        // Ocultar el botón antes de generar el PDF
+                        this.style.display = 'none';
+                        
+                        // Opciones para html2pdf
+                        const opt = {
+                            margin: [0.5, 0.5, 0.8, 0.5],
+                            filename: 'Cotizacion_TODOCR_${nombreCliente.replace(/\s+/g, '_')}.pdf',
+                            image: { type: 'jpeg', quality: 0.98 },
+                            html2canvas: { scale: 2 },
+                            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                        };
+                        
+                        // Generar el PDF
+                        const element = document.getElementById('pdf-content');
+                        html2pdf().from(element).set(opt).save().then(() => {
+                            // Opcional: cerrar la ventana después de la descarga
+                            window.close();
+                        });
                     });
-                }
-                return response.blob();
-            })
-            .then(blob => {
-                // Crear URL del blob
-                const url = window.URL.createObjectURL(blob);
+                    
+                    // Generar automáticamente después de 1 segundo
+                    setTimeout(function() {
+                        document.getElementById('download-pdf').click();
+                    }, 1000);
+                </script>
+            </body>
+            </html>
+        `);
 
-                // Crear un enlace para descargar el PDF
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Cotizacion_TODOCR_${datos.cliente.nombre.replace(/\s+/g, '_')}.pdf`;
-                document.body.appendChild(a);
-                a.click();
+        // Cerrar el documento para finalizar la escritura
+        newWindow.document.close();
 
-                // Limpiar
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
+        // Ocultar pantalla de carga después de un tiempo
+        setTimeout(() => {
+            ocultarCarga();
+            mostrarExito('Vista previa de PDF generada correctamente');
+        }, 1500);
 
-                // Ocultar carga y mostrar éxito
-                ocultarCarga();
-                mostrarExito('PDF generado y descargado correctamente');
-            })
-            .catch(error => {
-                console.error('Error al generar el PDF:', error);
-                ocultarCarga();
-                mostrarError(`Error al generar el PDF: ${error.message}`);
-            });
     } catch (error) {
         console.error('Error al preparar los datos para el PDF:', error);
         ocultarCarga();
-        mostrarError('Error al generar el PDF. Por favor, intente de nuevo.');
+        mostrarError('Error al generar el PDF: ' + error.message);
     }
 }
 
