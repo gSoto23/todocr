@@ -609,7 +609,7 @@ function exportarPDF() {
                         
                         // Opciones para html2pdf
                         const opt = {
-                            margin: [0.2, 0.2, 0.2, 0.2],
+                            margin: [0.3, 0.2],
                             filename: 'Cotizacion_TODOCR_${nombreCliente.replace(/\s+/g, '_')}.pdf',
                             image: { type: 'jpeg', quality: 0.98 },
                             html2canvas: { scale: 1.5 },
@@ -627,7 +627,7 @@ function exportarPDF() {
                     // Generar automáticamente después de 1 segundo
                     setTimeout(function() {
                         document.getElementById('download-pdf').click();
-                    }, 4000);
+                    }, 2000);
                 </script>
             </body>
             </html>
