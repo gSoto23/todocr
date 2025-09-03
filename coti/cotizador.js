@@ -602,75 +602,33 @@ function exportarPDF() {
                 </div>
 
                 <script>
-            // Precargar la imagen del logo
-            function precargarImagen(url) {
-                return new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.onload = () => resolve();
-                    img.onerror = () => {
-                        console.warn('No se pudo cargar la imagen:', url);
-                        resolve(); // Continuar incluso si falla
-                    };
-                    img.src = url;
-                });
-            }
-
-            // Esperar a que la página se cargue completamente
-            window.onload = function() {
-                // Precargar el logo
-                precargarImagen('logotodocrmini.png')
-                .then(() => {
-                    console.log('Imagen precargada, esperando para generar PDF...');
-                    // Esperar un poco más para asegurarse de que todo está renderizado
-                    setTimeout(function() {
-                        // Configurar el botón de descarga
-                        document.getElementById('download-pdf').addEventListener('click', generarPDF);
+                    // Función para generar el PDF cuando se hace clic en el botón
+                    document.getElementById('download-pdf').addEventListener('click', function() {
+                        // Ocultar el botón antes de generar el PDF
+                        this.style.display = 'none';
                         
-                        // Llamar automáticamente después de un tiempo
-                        setTimeout(function() {
-                            console.log('Iniciando generación automática del PDF');
-                            generarPDF();
-                        }, 1000);
-                    }, 1000);
-                });
-            };
-
-            function generarPDF() {
-                // Ocultar el botón antes de generar el PDF
-                document.getElementById('download-pdf').style.display = 'none';
-                
-                // Opciones para html2pdf
-                const opt = {
-                    margin: 10,
-                    filename: 'Cotizacion_TODOCR_${nombreCliente.replace(/\s+/g, '_')}.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { 
-                        scale: 2,
-                        useCORS: true,
-                        logging: true
-                    },
-                    jsPDF: { 
-                        unit: 'mm', 
-                        format: 'a4', 
-                        orientation: 'portrait',
-                    }
-                };
-                
-                // Crear una versión combinada del contenido y el footer para el PDF
-                const content = document.getElementById('pdf-content');
-                const footer = document.getElementById('pdf-footer');
-                
-                // Generar el PDF
-                html2pdf()
-                    .from(document.getElementById('pdf-container'))
-                    .set(opt)
-                    .save()
-                    .catch(err => {
-                        console.error('Error generando PDF:', err);
+                        // Opciones para html2pdf
+                        const opt = {
+                            margin: [0.5, 0.5, 0.8, 0.5],
+                            filename: 'Cotizacion_TODOCR_${nombreCliente.replace(/\s+/g, '_')}.pdf',
+                            image: { type: 'jpeg', quality: 0.98 },
+                            html2canvas: { scale: 2 },
+                            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                        };
+                        
+                        // Generar el PDF
+                        const element = document.getElementById('pdf-content');
+                        html2pdf().from(element).set(opt).save().then(() => {
+                            // Opcional: cerrar la ventana después de la descarga
+                            // window.close();
+                        });
                     });
-            }
-        </script>
-
+                    
+                    // Generar automáticamente después de 1 segundo
+                    setTimeout(function() {
+                        document.getElementById('download-pdf').click();
+                    }, 4000);
+                </script>
             </body>
             </html>
         `);
