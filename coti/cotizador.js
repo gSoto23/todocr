@@ -495,7 +495,7 @@ function exportarPDF() {
             <div id="pdf-content">
                 <!-- Logo y encabezado -->
                 <div class="header">
-                    <img src="logotodocrmini.png" alt="TODOCR Logo" class="logo" style="height: 140px;">
+                    <img src="../assets/logotodocrmini.png" alt="TODOCR Logo" class="logo" style="height: 140px;">
                     <div style="text-align: right;">
                         <p><strong>TODOCR | COTIZACIÓN</strong></p>
                         <p>Limpieza y Jardinería</p>
