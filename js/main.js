@@ -1,29 +1,10 @@
 // API Configuration
 const API_CONFIG = {
-    BASE_URL: 'https://todocr.com/',
+    BASE_URL: 'https://todocr.com',
     // BASE_URL: 'http://localhost:3000',
     ENDPOINTS: {
         CONTACT: '/api/email/contact-home'
     }
-};
-
-// Schema.org data
-const schemaData = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "TODOCR",
-    "image": "https://www.todocr.com/assets/hero.jpg",
-    "url": "https://www.todocr.com/",
-    "telephone": "+50670808613",
-    "email": "info.todocr@gmail.com",
-    "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Poás",
-        "addressRegion": "Alajuela",
-        "addressCountry": "CR"
-    },
-    "areaServed": ["Poás", "Alajuela Centro", "Costa Rica"],
-    "sameAs": ["https://wa.me/50670808613"]
 };
 
 // Helper function for DOM elements
@@ -37,15 +18,27 @@ function populateTexts() {
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (i18n[currentLang][key]) {
-            element.textContent = i18n[currentLang][key];
+            if (element.tagName === 'META') {
+                element.setAttribute('content', i18n[currentLang][key]);
+            } else {
+                element.textContent = i18n[currentLang][key];
 
-            // For inputs, also update placeholder
-            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                element.placeholder = i18n[currentLang][key];
+                // For inputs, also update placeholder
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    element.placeholder = i18n[currentLang][key];
+                }
             }
         }
     });
-    document.documentElement.lang = currentLang;
+
+    document.querySelectorAll('[data-i18n-title]').forEach(element => {
+        const key = element.getAttribute('data-i18n-title');
+        if (i18n[currentLang][key]) {
+            element.title = i18n[currentLang][key];
+        }
+    });
+
+    document.documentElement.lang = currentLang === 'en' ? 'en' : 'es-CR';
 }
 
 // Contact form summary builder
@@ -277,12 +270,6 @@ async function handleEmailSubmit(event) {
 
 // Initialize everything when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    // Insert Schema.org
-    const script = document.createElement('script');
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(schemaData);
-    document.head.appendChild(script);
-
     // Set current year
     const yearElement = F('yr');
     if (yearElement) {

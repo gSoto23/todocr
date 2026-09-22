@@ -1,0 +1,56 @@
+User-agent: *
+Allow: /
+Disallow: /coti/
+Disallow: /login.html
+Disallow: /report/
+
+# Crawlers de IA — acceso permitido para respuestas y entrenamiento
+User-agent: GPTBot
+Allow: /
+Disallow: /coti/
+Disallow: /login.html
+Disallow: /report/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /coti/
+Disallow: /login.html
+Disallow: /report/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /coti/
+Disallow: /login.html
+Disallow: /report/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /coti/
+Disallow: /login.html
+Disallow: /report/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /coti/
+Disallow: /login.html
+Disallow: /report/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /coti/
+Disallow: /login.html
+Disallow: /report/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /coti/
+Disallow: /login.html
+Disallow: /report/
+
+User-agent: CCBot
+Allow: /
+Disallow: /coti/
+Disallow: /login.html
+Disallow: /report/
+
+Sitemap: https://www.todocr.com/sitemap.xml

@@ -4,18 +4,37 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>TODOCR · Cotizador Rápido</title>
+    <meta name="robots" content="noindex, nofollow"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-slate-50 text-slate-800" style="display:none">
 <script>
-    // Protección de ruta - debe ir al inicio
-    (function checkAuth() {
-        const AUTH_KEY = 'todocr_auth';
+    // Protección de ruta: valida el token de sesión contra el backend antes de mostrar la página
+    (async function checkAuth() {
+        const AUTH_TOKEN_KEY = 'todocr_auth_token';
         const LOGIN_PATH = '../login.html';
+        const VERIFY_URL = 'https://todocr.com/api/auth/verify';
 
-        if (localStorage.getItem(AUTH_KEY) !== 'authenticated') {
+        const token = localStorage.getItem(AUTH_TOKEN_KEY);
+        if (!token) {
+            window.location.href = LOGIN_PATH;
+            return;
+        }
+
+        try {
+            const res = await fetch(VERIFY_URL, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!res.ok) {
+                localStorage.removeItem(AUTH_TOKEN_KEY);
+                window.location.href = LOGIN_PATH;
+                return;
+            }
+            document.body.style.display = '';
+        } catch (error) {
+            // Si no se puede validar la sesión, no dejamos pasar por seguridad
             window.location.href = LOGIN_PATH;
         }
     })();
@@ -26,11 +45,11 @@
        <a href="https://www.todocr.com/"><img src="../assets/logotodocr.png" alt="TODOCR" class="h-10 w-auto"></a>
         <div>
             <h1 class="text-xl md:text-2xl font-bold tracking-tight">· Cotizador Rápido</h1>
-            <p class="text-sm text-slate-600">Jardinería · Limpieza · Reparaciones</p>
+            <p class="text-sm text-slate-600">Jardinería · Limpieza · Reparaciones · un proyecto de Tomato CR</p>
         </div>
         <div class="ml-auto hidden md:flex gap-2">
             <span class="badge bg-black/5 text-slate-700">WhatsApp: +506 7080 8613</span>
-            <span class="badge bg-black/5 text-slate-700">info.todocr@gmail.com</span>
+            <span class="badge bg-black/5 text-slate-700">tomatocostarica@gmail.com</span>
         </div>
     </div>
 </header>

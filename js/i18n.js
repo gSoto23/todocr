@@ -1,5 +1,8 @@
 const i18n = {
     es: {
+        page_title: "TODOCR · Jardinería, Limpieza y Mantenimiento en Poás y Alajuela | Un proyecto de Tomato CR",
+        page_description: "TODOCR (un proyecto de Tomato CR): servicios profesionales de jardinería, limpieza y mantenimiento para Airbnb, hoteles y condominios en Poás y Alajuela, Costa Rica. Tarifas orientativas y cotización rápida.",
+        footer_brand_note: "TODOCR es un proyecto de Tomato CR.",
         nav_services: "Servicios", nav_plans: "Planes", nav_process: "Proceso", nav_gallery: "Galería",
         nav_testimonials: "Testimonios", nav_faq: "FAQ", nav_contact: "Contacto", nav_login: "Login Cotizador",
         cta_quote: "Cotiza ahora",
@@ -85,6 +88,9 @@ const i18n = {
         email_error: "Error al enviar el email. Por favor, intente de nuevo."
     },
     en: {
+        page_title: "TODOCR · Gardening, Cleaning and Maintenance in Poás and Alajuela | A Tomato CR project",
+        page_description: "TODOCR (a Tomato CR project): professional gardening, cleaning and maintenance services for Airbnb, hotels and condos in Poás and Alajuela, Costa Rica. Ballpark rates and fast quotes.",
+        footer_brand_note: "TODOCR is a project by Tomato CR.",
         nav_services: "Services", nav_plans: "Plans", nav_process: "Process", nav_gallery: "Gallery",
         nav_testimonials: "Testimonials", nav_faq: "FAQ", nav_contact: "Contact", nav_login: "Estimator Login",
         cta_quote: "Get a quote",

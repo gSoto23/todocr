@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const EmailService = require('../services/emailService');
 const { contactTemplate, quotationTemplate, reportTemplate } = require('../utils/emailTemplates');
+const { requireAuth } = require('../middleware/auth');
 
 const upload = multer({
     limits: {
@@ -35,7 +36,7 @@ router.post('/contact-home', async (req, res) => {
         });
 
         await EmailService.sendEmail({
-            to: 'info.todocr@gmail.com',
+            to: process.env.CONTACT_EMAIL || 'tomatocostarica@gmail.com',
             cc: email,
             subject: `Nuevo contacto desde web: ${service}`,
             html: emailContent.html,
@@ -52,8 +53,8 @@ router.post('/contact-home', async (req, res) => {
     }
 });
 
-// Ruta para el cotizador (desde cotizador.html)
-router.post('/quote', upload.array('attachments'), async (req, res) => {
+// Ruta para el cotizador (desde cotizador.html) - protegida con login
+router.post('/quote', requireAuth, upload.array('attachments'), async (req, res) => {
     try {
         const { to, cc, service, datos } = req.body;
 
@@ -106,7 +107,7 @@ router.post('/quote', upload.array('attachments'), async (req, res) => {
         const emailContent = quotationTemplate(datosCompletos);
 
         await EmailService.sendEmail({
-            to: to || 'info.todocr@gmail.com',
+            to: to || process.env.CONTACT_EMAIL || 'tomatocostarica@gmail.com',
             cc: cc ? [cc] : [],
             subject: `Cotización TODOCR: ${service}`,
             html: emailContent.html,
@@ -205,7 +206,7 @@ router.post('/cleaning-report', upload.array('images'), async (req, res) => {
         });
 
         await EmailService.sendEmail({
-            to: process.env.REPORTS_EMAIL || 'info.todocr@gmail.com',
+            to: process.env.REPORTS_EMAIL || 'tomatocostarica@gmail.com',
             subject: `Reporte de limpieza - ${type} - ${date}`,
             html: emailContent.html,
             text: emailContent.text,

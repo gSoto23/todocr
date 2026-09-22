@@ -9,7 +9,8 @@ class FormHandler {
     initializeConfig() {
         this.API_CONFIG = {
             // BASE_URL: 'http://localhost:3000',
-            BASE_URL: 'https://todocr.com/',
+            BASE_URL: 'https://todocr.com',
+            AUTH_TOKEN_KEY: 'todocr_auth_token',
             ENDPOINTS: {
                 QUOTE: '/api/email/quote',
                 CONTACT: '/api/email/contact'
@@ -247,13 +248,21 @@ class FormHandler {
             }
 
             console.log('Enviando solicitud...');
+            const token = localStorage.getItem(this.API_CONFIG.AUTH_TOKEN_KEY);
             const response = await fetch(
                 `${this.API_CONFIG.BASE_URL}${this.API_CONFIG.ENDPOINTS.QUOTE}`,
                 {
                     method: 'POST',
+                    headers: token ? { Authorization: `Bearer ${token}` } : {},
                     body: formData
                 }
             );
+
+            if (response.status === 401) {
+                localStorage.removeItem(this.API_CONFIG.AUTH_TOKEN_KEY);
+                window.location.href = '../login.html';
+                return;
+            }
 
             const data = await response.json();
 
@@ -283,7 +292,7 @@ class FormHandler {
 
         // Datos básicos para el email
         formData.append('to', datos.cliente.email);
-        formData.append('cc', 'info.todocr@gmail.com');
+        formData.append('cc', 'tomatocostarica@gmail.com');
         formData.append('service', `${datos.servicio.categoria} - ${datos.servicio.tipo}`);
 
         // Procesar imágenes

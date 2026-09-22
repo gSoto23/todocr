@@ -136,8 +136,8 @@ const baseTemplate = (content, { preheader = "TODOCR — Jardinería, Limpieza y
           </td></tr>
           <tr><td class="footer">
             TODOCR · Poás, Alajuela, Costa Rica<br/>
-            WhatsApp: <a href="https://wa.me/50670808613" target="_blank">+506 7080 8613</a> · Email: <a href="mailto:info.todocr@gmail.com">info.todocr@gmail.com</a><br/>
-            © ${new Date().getFullYear()} TODOCR
+            WhatsApp: <a href="https://wa.me/50670808613" target="_blank">+506 7080 8613</a> · Email: <a href="mailto:tomatocostarica@gmail.com">tomatocostarica@gmail.com</a><br/>
+            © ${new Date().getFullYear()} TODOCR · Un proyecto de Tomato CR
           </td></tr>
         </table>
       </td></tr>
