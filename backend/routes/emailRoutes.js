@@ -129,10 +129,8 @@ router.post('/quote', requireAuth, upload.array('attachments'), async (req, res)
         } else if (error.message.includes('Tipo de archivo')) {
             errorMessage = error.message;
             statusCode = 400;
-        } else if (error.response?.body?.errors) {
-            errorMessage = error.response.body.errors
-                .map(err => err.message)
-                .join('. ');
+        } else if (error.message) {
+            errorMessage = error.message;
         }
 
         res.status(statusCode).json({
@@ -145,8 +143,6 @@ router.post('/quote', requireAuth, upload.array('attachments'), async (req, res)
         });
     }
 });
-
-
 
 // Ruta para el reporte de limpieza (desde reporte.html)
 router.post('/cleaning-report', upload.array('images'), async (req, res) => {

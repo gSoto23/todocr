@@ -1,14 +1,20 @@
-const sgMail = require('@sendgrid/mail');
-const config = require('../config/sendgrid');
+const nodemailer = require('nodemailer');
+const config = require('../config/mailer');
 
-sgMail.setApiKey(config.apiKey);
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: config.user,
+        pass: config.appPassword
+    }
+});
 
 class EmailService {
     static async sendEmail({ to, cc, subject, text, html, attachments = [] }) {
         try {
-            const msg = {
+            const mailOptions = {
+                from: `"TODOCR" <${config.user}>`,
                 to,
-                from: config.fromEmail,
                 subject,
                 text,
                 html
@@ -16,28 +22,20 @@ class EmailService {
 
             // Agregar CC si existe
             if (cc && cc.length > 0) {
-                msg.cc = Array.isArray(cc) ? cc : [cc];
+                mailOptions.cc = Array.isArray(cc) ? cc.join(', ') : cc;
             }
 
             // Procesar archivos adjuntos si existen
             if (attachments.length > 0) {
-                msg.attachments = attachments.map((file, index) => {
-                    // Asegurarse de que el contenido sea un Buffer antes de convertirlo
-                    const content = Buffer.isBuffer(file.content)
-                        ? file.content.toString('base64')
-                        : file.content;
-
-                    return {
-                        content,
-                        filename: file.filename || `attachment${index + 1}${this.getFileExtension(file.type)}`,
-                        type: file.type,
-                        disposition: 'attachment'
-                    };
-                });
+                mailOptions.attachments = attachments.map((file, index) => ({
+                    filename: file.filename || `attachment${index + 1}${this.getFileExtension(file.type)}`,
+                    content: file.content,
+                    contentType: file.type
+                }));
 
                 // Validar tamaño total de adjuntos
-                const totalSize = msg.attachments.reduce((sum, attachment) => {
-                    const contentSize = Buffer.from(attachment.content, 'base64').length;
+                const totalSize = attachments.reduce((sum, attachment) => {
+                    const contentSize = Buffer.isBuffer(attachment.content) ? attachment.content.length : 0;
                     console.log(`Archivo ${attachment.filename}: ${contentSize} bytes`);
                     return sum + contentSize;
                 }, 0);
@@ -50,30 +48,26 @@ class EmailService {
                 }
             }
 
-            console.log('Enviando email con SendGrid:', {
+            console.log('Enviando email con Gmail (Nodemailer):', {
                 to,
-                from: config.fromEmail,
+                from: config.user,
                 subject,
                 attachmentsCount: attachments.length
             });
 
-            const result = await sgMail.send(msg);
-            console.log('Email enviado exitosamente:', result);
+            const result = await transporter.sendMail(mailOptions);
+            console.log('Email enviado exitosamente:', result.messageId);
             return { success: true };
         } catch (error) {
             console.error('Error detallado al enviar email:', error);
 
-            if (error.response) {
-                console.error('SendGrid API Error:', error.response.body);
-            }
-
             let errorMessage = 'Error al enviar el email';
             if (error.message.includes('tamaño total')) {
                 errorMessage = error.message;
-            } else if (error.response?.body?.errors) {
-                errorMessage = error.response.body.errors
-                    .map(err => err.message)
-                    .join('. ');
+            } else if (error.responseCode === 535) {
+                errorMessage = 'Credenciales de Gmail inválidas. Revisa GMAIL_USER y GMAIL_APP_PASSWORD.';
+            } else if (error.message) {
+                errorMessage = error.message;
             }
 
             throw new Error(errorMessage);
